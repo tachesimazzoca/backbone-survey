@@ -1,0 +1,10 @@
+{
+  "name": "backbone-survey",
+  "version": "0.1.0",
+  "dependencies": {
+    "jquery": "1.10.1",
+    "underscore": "1.4.4",
+    "backbone": "1.0.0",
+    "json2": "*"
+  }
+}
