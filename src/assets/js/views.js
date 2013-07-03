@@ -22,7 +22,9 @@ var BackboneSurvey = BackboneSurvey || {};
       }
 
     , render: function() {
-        console.log(["AppView#render", app.survey]);
+        if (app.logger) {
+          app.logger.debug(["AppView#render", app.survey]);
+        }
         this.$title.html(app.survey.get("title") || "");
         this.$sections.html("");
         this.sectionViewMap = {};
@@ -201,6 +203,6 @@ var BackboneSurvey = BackboneSurvey || {};
   , CheckboxAnswerView: '<ul><% _.each(options, function(option) { %>' +
       '<li><label><input type="checkbox" name="answer-<%- num %>" value="<%- option.value %>"' +
       '<% if (_.contains(optionAnswers, option.value)) { %> checked="checked"<% } %>>' +
-      '<%- option.label %></label></li><% }); %> </ul>'
+      '<%- option.label %></label></li><% }); %></ul>'
   };
 })(jQuery, _, Backbone, BackboneSurvey);

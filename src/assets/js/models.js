@@ -13,6 +13,8 @@ var BackboneSurvey = BackboneSurvey || {};
       , page: 0
       , type: app.QuestionType.NONE
       , question: ""
+      , label: ""
+      , guide: ""
       , options: [] // select options
       , textOptions: [] // option keys that need a free text answer
       , singleOptions: [] // option keys that disable the other keys

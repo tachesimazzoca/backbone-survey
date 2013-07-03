@@ -1,66 +1,91 @@
 (function($, app) {
   module("backbone-survey views");
 
-  test("AppView", function() {
-    var view = new app.AppView();
-    app.survey.set(app.survey.parse({
-      survey: {
-        id: "123"
-      , title: "Test Survey"
-      , page: 0
-      }
-    , sections: [
-        {
-          num: 1
-        , page: 1
-        , question: "質問文1<strong><em>(太字イタリック)</em></strong>"
-        , type: app.QuestionType.TEXT
-        , label: "<strong>ラベル：</strong>"
-        , guide: "<em>(案内文)</em>"
-        }
-      , {
-          num: 2
-        , page: 1
-        , question: "質問文2<strong>(太字)</strong>"
-        , type: app.QuestionType.RADIO
-        , options: [
-            { value: "1", label: "単一選択1" }
-          , { value: "2", label: "単一選択2" }
-          , { value: "3", label: "単一選択3" }
-          ]
-        }
-      , {
-          num: 3
-        , page: 2
-        , question: "質問文3<strong>(太字)</strong>"
-        , type: app.QuestionType.CHECKBOX
-        , options: [
-            { value: "A", label: "複数選択1" }
-          , { value: "B", label: "複数選択2" }
-          , { value: "C", label: "複数選択3" }
-          ]
-        }
-      ]
-    }));
-    app.survey.set("page", 1);
+  test("AnswerViewFactory", function() {
+    var section = new app.Section();
+    var sectionView = new app.SectionView({ model: section });
+    var answerView;
+    answerView = app.AnswerViewFactory(sectionView);
+    ok(answerView instanceof app.NoneAnswerView, "Create NoneAnswerView");
 
-    //deepEqual($("#survey-app .survey-title").html(), "Test Survey", "survey-title");
-    //deepEqual($("#survey-app #survey-question-1 > p").html(),
-    //  "<strong>Q.1</strong> 質問文1<strong>(太字)</strong>",
-    //  "survey-question-1 of page1"
-    //);
-    //deepEqual($("#survey-app #survey-question-2 > p").html(),
-    //  "<strong>Q.2</strong> 質問文2<strong>(太字)</strong>",
-    //  "survey-question-2 of page1"
-    //);
+    section.set("type", app.QuestionType.NONE);
+    answerView = app.AnswerViewFactory(sectionView);
+    ok(answerView instanceof app.NoneAnswerView, "Create NoneAnswerView");
 
-    //app.survey.set("page", 2);
-    //deepEqual($("#survey-app #survey-question-3 > p").html(),
-    //  "<strong>Q.3</strong> 質問文3<strong>(太字)</strong>",
-    //  "survey-question-3 of page 2"
-    //);
+    section.set("type", app.QuestionType.TEXT);
+    answerView = app.AnswerViewFactory(sectionView);
+    ok(answerView instanceof app.TextAnswerView, "Create TextAnswerView");
 
-    //app.survey.set("page", 3);
-    //deepEqual($("#survey-app #survey-questions").html(), "", "page 3");
+    section.set("type", app.QuestionType.RADIO);
+    answerView = app.AnswerViewFactory(sectionView);
+    ok(answerView instanceof app.RadioAnswerView, "Create RadioAnswerView");
+
+    section.set("type", app.QuestionType.CHECKBOX);
+    answerView = app.AnswerViewFactory(sectionView);
+    ok(answerView instanceof app.CheckboxAnswerView, "Create CheckboxAnswerView");
+  });
+
+  test("TextAnswerView", function() {
+    var ans = ["回答文<i>"];
+    var section = new app.Section({
+      num: 1
+    , type: app.QuestionType.TEXT
+    , textAnswers: ans
+    });
+    var view = new app.TextAnswerView({ model: section });
+    view.render();
+    deepEqual(view.$el.html(), '<input type="text" name="answer-1" value="回答文&lt;i&gt;">');
+    deepEqual(view.textAnswers(), ans);
+    deepEqual(view.optionAnswers(), []);
+  });
+
+  test("RadioAnswerView", function() {
+    var opts = [
+      { value: "A", label: "回答A" }
+    , { value: "B", label: "回答B" }
+    ];
+    var ans = ["B"];
+    var section = new app.Section({
+      num: 2 
+    , type: app.QuestionType.Radio
+    , options: opts
+    , optionAnswers: ans
+    });
+    var view = new app.RadioAnswerView({ model: section });
+    view.render();
+    deepEqual(view.$el.html(),
+      '<ul>' +
+      '<li><label><input type="radio" name="answer-2" value="A">回答A</label></li>' +
+      '<li><label><input type="radio" name="answer-2" value="B" checked="checked">回答B</label></li>' +
+      '</ul>'
+    );
+    deepEqual(view.textAnswers(), []);
+    deepEqual(view.optionAnswers(), ans);
+  });
+
+  test("CheckboxAnswerView", function() {
+    var opts = [
+      { value: "1", label: "回答1" }
+    , { value: "2", label: "回答2" }
+    , { value: "3", label: "回答3" }
+    ];
+    var ans = ["1", "3"];
+    var section = new app.Section({
+      num: 3 
+    , type: app.QuestionType.Checkbox
+    , options: opts
+    , optionAnswers: ans
+    });
+    var view = new app.CheckboxAnswerView({ model: section });
+    view.render();
+    deepEqual(view.$el.html(),
+      '<ul>' +
+      '<li><label><input type="checkbox" name="answer-3" value="1" checked="checked">回答1</label></li>' +
+      '<li><label><input type="checkbox" name="answer-3" value="2">回答2</label></li>' +
+      '<li><label><input type="checkbox" name="answer-3" value="3" checked="checked">回答3</label></li>' +
+      '</ul>'
+    );
+    deepEqual(view.textAnswers(), []);
+    deepEqual(view.optionAnswers(), ans);
   });
 })(jQuery, BackboneSurvey);

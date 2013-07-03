@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>backbone-survey/examples</title>
+<script type="text/javascript" src="../lib/json2/json2.js"></script>
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/underscore/underscore-min.js"></script>
+<script type="text/javascript" src="../lib/backbone/backbone-min.js"></script>
+<script type="text/javascript" src="../assets/js/backbone-survey.js"></script>
+<script type="text/javascript">
+(function($, app) {
+  $(function() {
+    var Logger = function() {}
+    Logger.prototype = {
+      info: function(msg) { console.log(msg); }
+    , warn: function(msg) { console.log(msg); }
+    , debug: function(msg) { console.log(msg); }
+    };
+    app.logger = new Logger();
+
+    app.survey.set(app.survey.parse({
+      survey: {
+        title: "テストアンケート"
+      , page: 0
+      }
+    , sections: [
+        {
+          num: 1
+        , page: 1
+        , question: "質問文1<strong><em>(太字イタリック)</em></strong>"
+        , type: app.QuestionType.TEXT
+        , label: "<strong>ラベル：</strong>"
+        , guide: "<em>(案内文)</em>"
+        }
+      , {
+          num: 2
+        , page: 1
+        , question: "質問文2<strong>(太字)</strong>"
+        , type: app.QuestionType.RADIO
+        , options: [
+            { value: "1", label: "単一選択1" }
+          , { value: "2", label: "単一選択2" }
+          , { value: "3", label: "単一選択3" }
+          ]
+        }
+      , {
+          num: 3
+        , page: 2
+        , question: "質問文3<strong>(太字)</strong>"
+        , type: app.QuestionType.CHECKBOX
+        , options: [
+            { value: "A", label: "複数選択1" }
+          , { value: "B", label: "複数選択2" }
+          , { value: "C", label: "複数選択3" }
+          ]
+        }
+      ]
+    }));
+
+    var view = new app.AppView();
+    app.survey.set("page", 1);
+  });
+})(jQuery, BackboneSurvey);
+</script>
+</head>
+<body>
+  <div id="survey-app">
+    <h1 class="survey-title"></h1>
+    <div id="survey-content">
+      <div id="survey-sections"></div>
+        <button class="survey-prev">Prev</button> <button class="survey-next">Next</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
