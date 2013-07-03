@@ -2,13 +2,20 @@
   module("backbone-survey models");
 
   test("Section", function() {
-    var model = new app.Section({
-      num: 1
-    , page: 1
-    , routeDependencies: ["A", "B", "C,D"]
-    });
-    deepEqual(model.get("page"), 1);
-    deepEqual(model.get("routeDependencies"), ["A", "B", "C,D"]);
+    var model;
+    var attr = {};
+
+    model = new app.Section();
+    attr = {
+      textAnswers: ["回答テキスト"]
+    , optionAnswers: ["1", "2"]
+    };
+    model.set(attr);
+    deepEqual(model.get("textAnswers"), attr.textAnswers);
+    deepEqual(model.get("optionAnswers"), attr.optionAnswers);
+    model.clearAnswers();
+    deepEqual(model.get("textAnswers"), []);
+    deepEqual(model.get("optionAnswers"), []);
   });
 
   test("Sections", function() {

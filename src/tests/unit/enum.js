@@ -3,7 +3,8 @@
 
   test("AnswerType is type safe enum.", function() {
     var keys = [
-      "TEXT"
+      "NONE"
+    , "TEXT"
     , "OPTION"
     ];
     for (var i = 0; i < keys.length; i++) {
@@ -21,7 +22,8 @@
 
   test("QuestionType is type safe enum.", function() {
     var keys = [
-      "TEXT"
+      "NONE"
+    , "TEXT"
     , "RADIO"
     , "CHECKBOX"
     ];
@@ -39,6 +41,9 @@
   });
 
   test("QuestionType methods", function() {
+    ok(app.QuestionType.NONE.answerType() === app.AnswerType.NONE);
+    ok(app.QuestionType.NONE.multiple() === false);
+
     ok(app.QuestionType.TEXT.answerType() === app.AnswerType.TEXT);
     ok(app.QuestionType.TEXT.multiple() === false);
 

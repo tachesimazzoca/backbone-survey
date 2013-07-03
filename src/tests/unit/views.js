@@ -14,6 +14,7 @@
           num: 1
         , page: 1
         , question: "質問文1<strong><em>(太字イタリック)</em></strong>"
+        , type: app.QuestionType.TEXT
         , label: "<strong>ラベル：</strong>"
         , guide: "<em>(案内文)</em>"
         }
@@ -21,6 +22,7 @@
           num: 2
         , page: 1
         , question: "質問文2<strong>(太字)</strong>"
+        , type: app.QuestionType.RADIO
         , options: [
             { value: "1", label: "単一選択1" }
           , { value: "2", label: "単一選択2" }
@@ -31,12 +33,12 @@
           num: 3
         , page: 2
         , question: "質問文3<strong>(太字)</strong>"
+        , type: app.QuestionType.CHECKBOX
         , options: [
             { value: "A", label: "複数選択1" }
           , { value: "B", label: "複数選択2" }
           , { value: "C", label: "複数選択3" }
           ]
-        , multiple: true
         }
       ]
     }));

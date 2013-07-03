@@ -11,22 +11,15 @@ var BackboneSurvey = BackboneSurvey || {};
     , defaults: {
         num: 0
       , page: 0
+      , type: app.QuestionType.NONE
       , question: ""
       , options: [] // select options
-      , multiple: false // checkbox | radio
       , textOptions: [] // option keys that need a free text answer
       , singleOptions: [] // option keys that disable the other keys
       , optionAnswers: [] // selected options
       , textAnswers: [] // free text answers
       , rules: []
       , routeDependencies: []
-      }
-
-    , questionType: function() {
-        return (this.get("options").length === 0) ?
-          app.QuestionType.TEXT :
-          (this.get("multiple") ? app.QuestionType.CHECKBOX :
-          app.QuestionType.RADIO);
       }
 
     , clearAnswers: function() {

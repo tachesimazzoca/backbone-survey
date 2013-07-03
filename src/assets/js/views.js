@@ -96,7 +96,7 @@ var BackboneSurvey = BackboneSurvey || {};
     // AnswerViewFactory
     app.AnswerViewFactory = function(sectionView) {
       var func;
-      switch (sectionView.model.questionType()) {
+      switch (sectionView.model.get("type")) {
         case app.QuestionType.TEXT:
           func = app.TextAnswerView;
           break;
@@ -107,7 +107,7 @@ var BackboneSurvey = BackboneSurvey || {};
           func = app.CheckboxAnswerView;
           break;
         default:
-          func = app.NullAnswerView;
+          func = app.NoneAnswerView;
           break;
       }
       return new func({
@@ -117,8 +117,8 @@ var BackboneSurvey = BackboneSurvey || {};
       });
     };
 
-    // NullAnswerView
-    app.NullAnswerView = Backbone.View.extend({
+    // NoneAnswerView
+    app.NoneAnswerView = Backbone.View.extend({
       render: function() {
         return this;
       }

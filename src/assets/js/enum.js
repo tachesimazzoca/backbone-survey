@@ -4,6 +4,7 @@ var BackboneSurvey = BackboneSurvey || {};
   // AnswerType
   var AnswerType = function() {};
   BackboneSurvey.AnswerType = {};
+  BackboneSurvey.AnswerType.NONE = new AnswerType();
   BackboneSurvey.AnswerType.TEXT = new AnswerType();
   BackboneSurvey.AnswerType.OPTION = new AnswerType();
 
@@ -17,6 +18,7 @@ var BackboneSurvey = BackboneSurvey || {};
   , multiple: function() { return this._multiple; }
   };
   BackboneSurvey.QuestionType = {};
+  BackboneSurvey.QuestionType.NONE = new QuestionType(BackboneSurvey.AnswerType.NONE, false);
   BackboneSurvey.QuestionType.TEXT = new QuestionType(BackboneSurvey.AnswerType.TEXT, false);
   BackboneSurvey.QuestionType.RADIO = new QuestionType(BackboneSurvey.AnswerType.OPTION, false);
   BackboneSurvey.QuestionType.CHECKBOX = new QuestionType(BackboneSurvey.AnswerType.OPTION, true);
