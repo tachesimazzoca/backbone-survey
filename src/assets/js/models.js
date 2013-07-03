@@ -12,10 +12,12 @@ var BackboneSurvey = BackboneSurvey || {};
         num: 0
       , page: 0
       , question: ""
-      , options: []
-      , multiple: false
-      , freeOptions: []
-      , skipOptions: []
+      , options: [] // select options
+      , multiple: false // checkbox | radio
+      , textOptions: [] // option keys that need a free text answer
+      , singleOptions: [] // option keys that disable the other keys
+      , optionAnswers: [] // selected options
+      , textAnswers: [] // free text answers
       , rules: []
       , routeDependencies: []
       }
@@ -25,6 +27,13 @@ var BackboneSurvey = BackboneSurvey || {};
           app.QuestionType.TEXT :
           (this.get("multiple") ? app.QuestionType.CHECKBOX :
           app.QuestionType.RADIO);
+      }
+
+    , clearAnswers: function() {
+        this.set({
+          optionAnswers: []
+        , textAnswers: []
+        }, { silent: true });
       }
     });
 
@@ -54,7 +63,7 @@ var BackboneSurvey = BackboneSurvey || {};
             ps.push(p);
           }
         });
-        ps = _.sortBy(ps, function(num) { return -1 * num; });
+        ps = _.sortBy(ps, function(n) { return -1 * n; });
         return (ps.length > 0) ? ps[0] :
             (currentPage === 0) ? this.firstPage() : currentPage;
       }
@@ -67,7 +76,7 @@ var BackboneSurvey = BackboneSurvey || {};
             ps.push(p);
           }
         });
-        ps = _.sortBy(ps, function(num) { return num; });
+        ps = _.sortBy(ps, function(n) { return n; });
         var last = this.lastPage();
         return (ps.length > 0) ? ps[0] :
             (currentPage === 0 || last < currentPage) ? last : currentPage;
