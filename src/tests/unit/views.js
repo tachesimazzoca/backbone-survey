@@ -1,38 +1,38 @@
-(function($, app) {
+(function($) {
   module("backbone-survey views");
 
   test("AnswerViewFactory", function() {
-    var section = new app.Section();
-    var sectionView = new app.SectionView({ model: section });
+    var section = new BackboneSurvey.Section();
+    var sectionView = new BackboneSurvey.SectionView({ model: section });
     var answerView;
-    answerView = app.AnswerViewFactory(sectionView);
-    ok(answerView instanceof app.NoneAnswerView, "Create NoneAnswerView");
+    answerView = BackboneSurvey.AnswerViewFactory(sectionView);
+    ok(answerView instanceof BackboneSurvey.NoneAnswerView, "Create NoneAnswerView");
 
-    section.set("type", app.QuestionType.NONE);
-    answerView = app.AnswerViewFactory(sectionView);
-    ok(answerView instanceof app.NoneAnswerView, "Create NoneAnswerView");
+    section.set("type", BackboneSurvey.QuestionType.NONE);
+    answerView = BackboneSurvey.AnswerViewFactory(sectionView);
+    ok(answerView instanceof BackboneSurvey.NoneAnswerView, "Create NoneAnswerView");
 
-    section.set("type", app.QuestionType.TEXT);
-    answerView = app.AnswerViewFactory(sectionView);
-    ok(answerView instanceof app.TextAnswerView, "Create TextAnswerView");
+    section.set("type", BackboneSurvey.QuestionType.TEXT);
+    answerView = BackboneSurvey.AnswerViewFactory(sectionView);
+    ok(answerView instanceof BackboneSurvey.TextAnswerView, "Create TextAnswerView");
 
-    section.set("type", app.QuestionType.RADIO);
-    answerView = app.AnswerViewFactory(sectionView);
-    ok(answerView instanceof app.RadioAnswerView, "Create RadioAnswerView");
+    section.set("type", BackboneSurvey.QuestionType.RADIO);
+    answerView = BackboneSurvey.AnswerViewFactory(sectionView);
+    ok(answerView instanceof BackboneSurvey.RadioAnswerView, "Create RadioAnswerView");
 
-    section.set("type", app.QuestionType.CHECKBOX);
-    answerView = app.AnswerViewFactory(sectionView);
-    ok(answerView instanceof app.CheckboxAnswerView, "Create CheckboxAnswerView");
+    section.set("type", BackboneSurvey.QuestionType.CHECKBOX);
+    answerView = BackboneSurvey.AnswerViewFactory(sectionView);
+    ok(answerView instanceof BackboneSurvey.CheckboxAnswerView, "Create CheckboxAnswerView");
   });
 
   test("TextAnswerView", function() {
     var ans = ["回答文<i>"];
-    var section = new app.Section({
+    var section = new BackboneSurvey.Section({
       num: 1
-    , type: app.QuestionType.TEXT
+    , type: BackboneSurvey.QuestionType.TEXT
     , textAnswers: ans
     });
-    var view = new app.TextAnswerView({ model: section });
+    var view = new BackboneSurvey.TextAnswerView({ model: section });
     view.render();
     deepEqual(view.$el.html(), '<input type="text" name="answer-1" value="回答文&lt;i&gt;">');
     deepEqual(view.textAnswers(), ans);
@@ -45,13 +45,13 @@
     , { value: "B", label: "回答B" }
     ];
     var ans = ["B"];
-    var section = new app.Section({
-      num: 2 
-    , type: app.QuestionType.Radio
+    var section = new BackboneSurvey.Section({
+      num: 2
+    , type: BackboneSurvey.QuestionType.Radio
     , options: opts
     , optionAnswers: ans
     });
-    var view = new app.RadioAnswerView({ model: section });
+    var view = new BackboneSurvey.RadioAnswerView({ model: section });
     view.render();
     deepEqual(view.$el.html(),
       '<ul>' +
@@ -70,13 +70,13 @@
     , { value: "3", label: "回答3" }
     ];
     var ans = ["1", "3"];
-    var section = new app.Section({
-      num: 3 
-    , type: app.QuestionType.Checkbox
+    var section = new BackboneSurvey.Section({
+      num: 3
+    , type: BackboneSurvey.QuestionType.Checkbox
     , options: opts
     , optionAnswers: ans
     });
-    var view = new app.CheckboxAnswerView({ model: section });
+    var view = new BackboneSurvey.CheckboxAnswerView({ model: section });
     view.render();
     deepEqual(view.$el.html(),
       '<ul>' +
@@ -88,4 +88,4 @@
     deepEqual(view.textAnswers(), []);
     deepEqual(view.optionAnswers(), ans);
   });
-})(jQuery, BackboneSurvey);
+})(jQuery);

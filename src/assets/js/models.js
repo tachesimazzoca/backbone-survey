@@ -1,9 +1,9 @@
 var BackboneSurvey = BackboneSurvey || {};
 
-(function($, _, Backbone, app) {
+(function($, _, Backbone) {
   $(function() {
     // Section
-    app.Section = Backbone.Model.extend({
+    var Section = BackboneSurvey.Section = Backbone.Model.extend({
       constructor: function() {
         Backbone.Model.apply(this, arguments);
       }
@@ -11,7 +11,7 @@ var BackboneSurvey = BackboneSurvey || {};
     , defaults: {
         num: 0
       , page: 0
-      , type: app.QuestionType.NONE
+      , type: BackboneSurvey.QuestionType.NONE
       , question: ""
       , label: ""
       , guide: ""
@@ -49,6 +49,42 @@ var BackboneSurvey = BackboneSurvey || {};
         Backbone.Model.prototype.set.call(this, attrs, options);
       }
 
+    , validate: function(attr, options) {
+        var logger = BackboneSurvey.logger;
+        var errors = [];
+        var answers = this.answers(attr);
+        if (logger) {
+          logger.debug(answers);
+        }
+        var me = this;
+        _.each(this.attributes.rules, function(rule) {
+          if (errors.length > 0) return;
+          var result = rule.validate(answers, me.attributes);
+          if (!result.valid) errors.push(result.message);
+        });
+        if (errors && logger) {
+          logger.debug(errors);
+        }
+        if (errors.length > 0) return errors;
+      }
+
+    , answers: function(attr) {
+        attr = attr || this.attributes;
+        var vals = [];
+        switch (this.get("type")) {
+          case BackboneSurvey.QuestionType.TEXT:
+            vals = attr.textAnswers;
+            break;
+          case BackboneSurvey.QuestionType.RADIO:
+          case BackboneSurvey.QuestionType.CHECKBOX:
+            vals = attr.optionAnswers;
+            break;
+          default:
+            break;
+        }
+        return vals;
+      }
+
     , clearAnswers: function() {
         this.set({
           optionAnswers: []
@@ -58,8 +94,8 @@ var BackboneSurvey = BackboneSurvey || {};
     });
 
     // Sections
-    app.Sections = Backbone.Collection.extend({
-      model: app.Section
+    var Sections = BackboneSurvey.Sections = Backbone.Collection.extend({
+      model: Section
 
     , firstPage: function() {
         return this.reduce(function(memo, model) {
@@ -104,9 +140,9 @@ var BackboneSurvey = BackboneSurvey || {};
     });
 
     // Survey
-    var Survey = Backbone.Model.extend({
+    var Survey = BackboneSurvey.Survey = Backbone.Model.extend({
       constructor: function() {
-        this.sections = new app.Sections();
+        this.sections = new Sections();
         Backbone.Model.apply(this, arguments);
       }
 
@@ -136,6 +172,6 @@ var BackboneSurvey = BackboneSurvey || {};
     });
 
     // Global Survey instance
-    app.survey = new Survey();
+    BackboneSurvey.survey = new Survey();
   });
-})(jQuery, _, Backbone, BackboneSurvey);
+})(jQuery, _, Backbone);

@@ -33,32 +33,46 @@ var BackboneSurvey = BackboneSurvey || {};
     // RequiredValidator
     BackboneSurvey.RequiredValidator = Validator.extend({
       validate: function(value, data) {
-        var v = value;
-        if (_.isNumber(v)) v = v.toString();
-        var err;
-        if (!_.isEmpty(v)) {
-          err = new ValidationResult.OK();
+        var vs = _.isArray(value) ? value : [value];
+        var result;
+        if (vs.length === 0) {
+          result = new ValidationResult.Error(this.message());
         } else {
-          err = new ValidationResult.Error(this.message());
+          var me = this;
+          _.each(vs, function(v) {
+            if (result) return;
+            if (_.isNumber(v)) v = v.toString();
+            if (_.isEmpty(v)) {
+              result = new ValidationResult.Error(me.message());
+            }
+          });
+          if (!result) {
+              result = new ValidationResult.OK();
+          }
         }
-        return err;
+        return result;
       }
     });
 
     // RangeLengthValidator
     BackboneSurvey.RangeLengthValidator = Validator.extend({
       validate: function(value, data) {
-        var v = value;
-        if (_.isNumber(v)) v = v.toString();
-        var min = _.isNumber(this.attributes.min) ? this.attributes.min : null;
-        var max = _.isNumber(this.attributes.max) ? this.attributes.max : null;
-        var err;
-        if ((min && min > v.length) || (max && max < v.length)) {
-          err = new ValidationResult.Error(this.message());
-        } else {
-          err = new ValidationResult.OK();
+        var vs = _.isArray(value) ? value : [value];
+        var result;
+        var me = this;
+        _.each(vs, function(v) {
+          if (result) return;
+          if (_.isNumber(v)) v = v.toString();
+          var min = _.isNumber(me.attributes.min) ? me.attributes.min : null;
+          var max = _.isNumber(me.attributes.max) ? me.attributes.max : null;
+          if ((min && min > v.length) || (max && max < v.length)) {
+            result = new ValidationResult.Error(me.message());
+          }
+        });
+        if (!result) {
+            result = new ValidationResult.OK();
         }
-        return err;
+        return result;
       }
     });
   });

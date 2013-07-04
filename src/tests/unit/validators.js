@@ -21,12 +21,12 @@
     ok(validator instanceof BackboneSurvey.Validator);
     _.each(["", [], {}, false, null, undefined], function(v) {
       var rslt = validator.validate(v, {});
-      ok(rslt instanceof BackboneSurvey.ValidationResult.Error, "Error - " + v);
+      ok(rslt instanceof BackboneSurvey.ValidationResult.Error, "Error - " + typeof(v));
       deepEqual(rslt.message, str);
     });
     _.each([0, "0", "a"], function(v) {
       var rslt = validator.validate(v, {});
-      ok(rslt instanceof BackboneSurvey.ValidationResult.OK, "OK - " + v);
+      ok(rslt instanceof BackboneSurvey.ValidationResult.OK, "OK - " + typeof(v));
     });
   });
 

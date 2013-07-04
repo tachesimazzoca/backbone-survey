@@ -3,7 +3,7 @@ var BackboneSurvey = BackboneSurvey || {};
 (function($, _, Backbone, app) {
   $(function() {
     // AppView
-    app.AppView = Backbone.View.extend({
+    var AppView = BackboneSurvey.AppView = Backbone.View.extend({
       el: $("#survey-app")
 
     , elPrefix: "survey-"
@@ -18,25 +18,25 @@ var BackboneSurvey = BackboneSurvey || {};
         this.$sections = this.$("#" + this.elPrefix + "sections");
         this.sectionView = {};
 
-        this.listenTo(app.survey, "change", this.render);
+        this.listenTo(BackboneSurvey.survey, "change", this.render);
       }
 
     , render: function() {
-        if (app.logger) {
-          app.logger.debug(["AppView#render", app.survey]);
+        if (BackboneSurvey.logger) {
+          BackboneSurvey.logger.debug(["AppView#render", BackboneSurvey.survey]);
         }
-        this.$title.html(app.survey.get("title") || "");
+        this.$title.html(BackboneSurvey.survey.get("title") || "");
         this.$sections.html("");
         this.sectionViewMap = {};
-        if (app.survey.get("page") > 0) {
+        if (BackboneSurvey.survey.get("page") > 0) {
           var me = this;
-          app.survey.sections
+          BackboneSurvey.survey.sections
             .each(function(section) {
-              if (section.get("page") !== app.survey.get("page")) {
+              if (section.get("page") !== BackboneSurvey.survey.get("page")) {
                 return;
               }
               var num = section.get("num");
-              var view = me.sectionViewMap[num] = new app.SectionView({
+              var view = me.sectionViewMap[num] = new SectionView({
                 model: section
               , className: me.elPrefix + "section"
               });
@@ -49,32 +49,32 @@ var BackboneSurvey = BackboneSurvey || {};
       }
 
     , prevPage: function() {
-        app.survey.prevPage();
+        BackboneSurvey.survey.prevPage();
       }
 
     , nextPage: function() {
         for (var k in this.sectionViewMap) {
-          var model = app.survey.sections.findWhere({ num: parseInt(k, 10) });
+          var model = BackboneSurvey.survey.sections.findWhere({ num: parseInt(k, 10) });
           if (!model) return;
           model.clearAnswers();
           var view = this.sectionViewMap[k];
           model.set({
             textAnswers: view.textAnswers()
           , optionAnswers: view.optionAnswers()
-          }, { silent: true });
+          }, { validate: true });
         }
-        app.survey.nextPage();
+        BackboneSurvey.survey.nextPage();
       }
     });
 
     // SectionView
-    app.SectionView = Backbone.View.extend({
+    var SectionView = BackboneSurvey.SectionView = Backbone.View.extend({
       tagName: "div"
 
     , initialize: function() {
         this.elPrefix = this.elPrefix || "survey-";
-        this.sectionTemplate = _.template(app.Template.SectionView);
-        this.answerView = app.AnswerViewFactory(this);
+        this.sectionTemplate = _.template(Template.SectionView);
+        this.answerView = AnswerViewFactory(this);
       }
 
     , render: function() {
@@ -96,20 +96,20 @@ var BackboneSurvey = BackboneSurvey || {};
     });
 
     // AnswerViewFactory
-    app.AnswerViewFactory = function(sectionView) {
+    var AnswerViewFactory = BackboneSurvey.AnswerViewFactory = function(sectionView) {
       var func;
       switch (sectionView.model.get("type")) {
-        case app.QuestionType.TEXT:
-          func = app.TextAnswerView;
+        case BackboneSurvey.QuestionType.TEXT:
+          func = TextAnswerView;
           break;
-        case app.QuestionType.RADIO:
-          func = app.RadioAnswerView;
+        case BackboneSurvey.QuestionType.RADIO:
+          func = RadioAnswerView;
           break;
-        case app.QuestionType.CHECKBOX:
-          func = app.CheckboxAnswerView;
+        case BackboneSurvey.QuestionType.CHECKBOX:
+          func = CheckboxAnswerView;
           break;
         default:
-          func = app.NoneAnswerView;
+          func = NoneAnswerView;
           break;
       }
       return new func({
@@ -120,7 +120,7 @@ var BackboneSurvey = BackboneSurvey || {};
     };
 
     // NoneAnswerView
-    app.NoneAnswerView = Backbone.View.extend({
+    var NoneAnswerView = BackboneSurvey.NoneAnswerView = Backbone.View.extend({
       render: function() {
         return this;
       }
@@ -131,9 +131,9 @@ var BackboneSurvey = BackboneSurvey || {};
     });
 
     // TextAnswerView
-    app.TextAnswerView = Backbone.View.extend({
+    var TextAnswerView = BackboneSurvey.TextAnswerView = Backbone.View.extend({
       render: function() {
-        this.$el.html(_.template(app.Template.TextAnswerView)(this.model.toJSON()));
+        this.$el.html(_.template(Template.TextAnswerView)(this.model.toJSON()));
         return this;
       }
 
@@ -147,9 +147,9 @@ var BackboneSurvey = BackboneSurvey || {};
     });
 
     // RadioAnswerView
-    app.RadioAnswerView = Backbone.View.extend({
+    var RadioAnswerView = BackboneSurvey.RadioAnswerView = Backbone.View.extend({
       render: function() {
-        this.$el.html(_.template(app.Template.RadioAnswerView)(this.model.toJSON()));
+        this.$el.html(_.template(Template.RadioAnswerView)(this.model.toJSON()));
         return this;
       }
 
@@ -167,9 +167,9 @@ var BackboneSurvey = BackboneSurvey || {};
     });
 
     // CheckboxAnswerView
-    app.CheckboxAnswerView = Backbone.View.extend({
+    var CheckboxAnswerView = BackboneSurvey.CheckboxAnswerView = Backbone.View.extend({
       render: function() {
-        this.$el.html(_.template(app.Template.CheckboxAnswerView)(this.model.toJSON()));
+        this.$el.html(_.template(Template.CheckboxAnswerView)(this.model.toJSON()));
         return this;
       }
 
@@ -187,7 +187,7 @@ var BackboneSurvey = BackboneSurvey || {};
     });
   });
 
-  app.Template = {
+  var Template = BackboneSurvey.Template = {
     SectionView: '<div class="<%- elPrefix %>question">' +
       '<span class="<%- elPrefix %>question-num"><%- model.num %>. </span>' +
       '<span class="<%- elPrefix %>question-title"><%= model.question %></span></div>'
@@ -205,4 +205,4 @@ var BackboneSurvey = BackboneSurvey || {};
       '<% if (_.contains(optionAnswers, option.value)) { %> checked="checked"<% } %>>' +
       '<%- option.label %></label></li><% }); %></ul>'
   };
-})(jQuery, _, Backbone, BackboneSurvey);
+})(jQuery, _, Backbone);

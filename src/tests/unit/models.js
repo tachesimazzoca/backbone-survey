@@ -1,11 +1,11 @@
-(function($, app) {
+(function($) {
   module("backbone-survey models");
 
   test("Section", function() {
     var model;
     var attr = {};
 
-    model = new app.Section();
+    model = new BackboneSurvey.Section();
     attr = {
       textAnswers: ["回答テキスト"]
     , optionAnswers: ["1", "2"]
@@ -25,7 +25,7 @@
   });
 
   test("Sections", function() {
-    var sections = new app.Sections([
+    var sections = new BackboneSurvey.Sections([
       { num: 1 , page: 1 }
     , { num: 2 , page: 1 }
     , { num: 3 , page: 2 }
@@ -42,4 +42,4 @@
     deepEqual(sections.nextPage(2), 2);
     deepEqual(sections.nextPage(3), 2);
   });
-})(jQuery, BackboneSurvey);
+})(jQuery);

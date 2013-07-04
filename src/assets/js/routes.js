@@ -1,10 +1,10 @@
 var BackboneSurvey = BackboneSurvey || {};
 
-(function($, _, Backbone, app) {
+(function($, _, Backbone) {
   $(function() {
-    app.Routes = Backbone.Router.extend({
+    BackboneSurvey.Routes = Backbone.Router.extend({
       routes: {
       }
     });
   });
-})(jQuery, _, Backbone, BackboneSurvey);
+})(jQuery, _, Backbone);
