@@ -2,16 +2,16 @@ var BackboneSurvey = BackboneSurvey || {};
 
 (function($, _, Backbone) {
   $(function() {
-    // ValidationMessage
-    var ValidationMessage = BackboneSurvey.ValidationMessage = function(msg) {
+    // ValidationResult
+    var ValidationResult = BackboneSurvey.ValidationResult = function(msg) {
       this.message = msg || "";
     };
-    ValidationMessage.prototype = {
+    ValidationResult.prototype = {
       valid: true
     };
-    _.extend(ValidationMessage, BackboneSurvey.Extendable);
-    ValidationMessage.OK = ValidationMessage.extend({ valid: true });
-    ValidationMessage.Error = ValidationMessage.extend({ valid: false });
+    _.extend(ValidationResult, BackboneSurvey.Extendable);
+    ValidationResult.OK = ValidationResult.extend({ valid: true });
+    ValidationResult.Error = ValidationResult.extend({ valid: false });
 
     // Validator
     var Validator = BackboneSurvey.Validator = function(attr) {
@@ -19,7 +19,7 @@ var BackboneSurvey = BackboneSurvey || {};
     };
     Validator.prototype = {
       validate: function(value, data) {
-        return new ValidationMessage.OK();
+        return new ValidationResult.OK();
       }
     , message: function(attr) {
         attr = attr || {};
@@ -37,9 +37,9 @@ var BackboneSurvey = BackboneSurvey || {};
         if (_.isNumber(v)) v = v.toString();
         var err;
         if (!_.isEmpty(v)) {
-          err = new ValidationMessage.OK();
+          err = new ValidationResult.OK();
         } else {
-          err = new ValidationMessage.Error(this.message());
+          err = new ValidationResult.Error(this.message());
         }
         return err;
       }
@@ -54,9 +54,9 @@ var BackboneSurvey = BackboneSurvey || {};
         var max = _.isNumber(this.attributes.max) ? this.attributes.max : null;
         var err;
         if ((min && min > v.length) || (max && max < v.length)) {
-          err = new ValidationMessage.Error(this.message());
+          err = new ValidationResult.Error(this.message());
         } else {
-          err = new ValidationMessage.OK();
+          err = new ValidationResult.OK();
         }
         return err;
       }

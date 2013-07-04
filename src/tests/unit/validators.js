@@ -1,18 +1,18 @@
 (function($, _) {
   module("backbone-survey validators");
 
-  test("ValidationMessage", function() {
-    var clz = BackboneSurvey.ValidationMessage;
-    var msg;
-    msg = new BackboneSurvey.ValidationMessage.OK();
-    deepEqual(msg.valid, true);
-    ok(msg instanceof clz);
+  test("ValidationResult", function() {
+    var clz = BackboneSurvey.ValidationResult;
+    var rslt;
+    rslt = new BackboneSurvey.ValidationResult.OK();
+    deepEqual(rslt.valid, true);
+    ok(rslt instanceof clz);
 
     var str = "Error";
-    msg = new BackboneSurvey.ValidationMessage.Error(str);
-    ok(msg instanceof clz);
-    deepEqual(msg.valid, false);
-    deepEqual(msg.message, str);
+    rslt = new BackboneSurvey.ValidationResult.Error(str);
+    ok(rslt instanceof clz);
+    deepEqual(rslt.valid, false);
+    deepEqual(rslt.message, str);
   });
 
   test("RequiredValidator", function() {
@@ -20,13 +20,13 @@
     var validator = new BackboneSurvey.RequiredValidator({ message: str });
     ok(validator instanceof BackboneSurvey.Validator);
     _.each(["", [], {}, false, null, undefined], function(v) {
-      var msg = validator.validate(v, {});
-      ok(msg instanceof BackboneSurvey.ValidationMessage.Error, "Error - " + v);
-      deepEqual(msg.message, str);
+      var rslt = validator.validate(v, {});
+      ok(rslt instanceof BackboneSurvey.ValidationResult.Error, "Error - " + v);
+      deepEqual(rslt.message, str);
     });
     _.each([0, "0", "a"], function(v) {
-      var msg = validator.validate(v, {});
-      ok(msg instanceof BackboneSurvey.ValidationMessage.OK, "OK - " + v);
+      var rslt = validator.validate(v, {});
+      ok(rslt instanceof BackboneSurvey.ValidationResult.OK, "OK - " + v);
     });
   });
 
@@ -39,15 +39,15 @@
     , max: 10
     });
     ok(validator instanceof BackboneSurvey.Validator);
-    var msg;
-    msg = validator.validate("", {});
-    ok(msg instanceof BackboneSurvey.ValidationMessage.Error);
-    deepEqual(msg.message, "Name must be 1..10 characters", msg.message);
-    msg = validator.validate("01234567890", {});
-    ok(msg instanceof BackboneSurvey.ValidationMessage.Error);
-    deepEqual(msg.message, "Name must be 1..10 characters", msg.message);
-    msg = validator.validate("0123456789", {});
-    ok(msg instanceof BackboneSurvey.ValidationMessage.OK);
-    deepEqual(msg.message, "", msg.message);
+    var rslt;
+    rslt = validator.validate("", {});
+    ok(rslt instanceof BackboneSurvey.ValidationResult.Error);
+    deepEqual(rslt.message, "Name must be 1..10 characters", rslt.message);
+    rslt = validator.validate("01234567890", {});
+    ok(rslt instanceof BackboneSurvey.ValidationResult.Error);
+    deepEqual(rslt.message, "Name must be 1..10 characters", rslt.message);
+    rslt = validator.validate("0123456789", {});
+    ok(rslt instanceof BackboneSurvey.ValidationResult.OK);
+    deepEqual(rslt.message, "", rslt.message);
   });
 })(jQuery, _);
