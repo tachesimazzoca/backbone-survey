@@ -29,4 +29,25 @@
       ok(msg instanceof BackboneSurvey.ValidationMessage.OK, "OK - " + v);
     });
   });
+
+  test("RangeLengthValidator", function() {
+    var str = "Required";
+    var validator = new BackboneSurvey.RangeLengthValidator({
+      template: '<%- label %> must be <%- (min ? min : "") %>..<%- (max ? max : "") %> characters'
+    , label: "Name"
+    , min: 1
+    , max: 10
+    });
+    ok(validator instanceof BackboneSurvey.Validator);
+    var msg;
+    msg = validator.validate("", {});
+    ok(msg instanceof BackboneSurvey.ValidationMessage.Error);
+    deepEqual(msg.message, "Name must be 1..10 characters", msg.message);
+    msg = validator.validate("01234567890", {});
+    ok(msg instanceof BackboneSurvey.ValidationMessage.Error);
+    deepEqual(msg.message, "Name must be 1..10 characters", msg.message);
+    msg = validator.validate("0123456789", {});
+    ok(msg instanceof BackboneSurvey.ValidationMessage.OK);
+    deepEqual(msg.message, "", msg.message);
+  });
 })(jQuery, _);
