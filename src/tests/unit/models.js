@@ -16,6 +16,12 @@
     model.clearAnswers();
     deepEqual(model.get("textAnswers"), []);
     deepEqual(model.get("optionAnswers"), []);
+
+    model.set({ options: ["A", "B"] });
+    deepEqual(model.get("options"), [
+      { value: "A", label: "A" }
+    , { value: "B", label: "B" }
+    ], ".set with normalizer");
   });
 
   test("Sections", function() {

@@ -24,6 +24,31 @@ var BackboneSurvey = BackboneSurvey || {};
       , routeDependencies: []
       }
 
+    , set: function(key, val, options) {
+        if (key === null) return this;
+
+        if (typeof key === 'object') {
+          attrs = key;
+          options = val;
+        } else {
+          (attrs = {})[key] = val;
+        }
+
+        // Normailze attrs.options
+        if (typeof(attrs.options) !== "undefined") {
+          var opts = attrs.options || [];
+          attrs.options = [];
+          _.each(opts, function(v) {
+            if (typeof(v) !== "object") {
+              v = { value: v.toString(), label: v.toString() };
+            }
+            attrs.options.push(v);
+          });
+        }
+
+        Backbone.Model.prototype.set.call(this, attrs, options);
+      }
+
     , clearAnswers: function() {
         this.set({
           optionAnswers: []
