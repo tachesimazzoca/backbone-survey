@@ -28,31 +28,48 @@
         {
           num: 1
         , page: 1
-        , question: "質問文1<strong><em>(太字イタリック)</em></strong>"
+        , question: "テキスト入力設問です。<strong><em>HTMLタグはエスケープされません</em></strong>"
         , type: app.QuestionType.TEXT
         , label: "<strong>ラベル：</strong>"
-        , guide: "<em>(案内文)</em>"
+        , guide: "<em>(10文字以内)</em>"
+        , rules: [
+            new app.RequiredValidator({ messege: "入力してください" })
+          , new app.RangeLengthValidator({ messege: "10文字以内で入力してください", max: 10 })
+          ]
         }
       , {
           num: 2
-        , page: 1
-        , question: "質問文2<strong>(太字)</strong>"
+        , page: 2
+        , question: "単一選択設問です。"
         , type: app.QuestionType.RADIO
         , options: [
-            { value: "1", label: "単一選択1" }
-          , { value: "2", label: "単一選択2" }
-          , { value: "3", label: "単一選択3" }
+            { value: "1", label: "はい" }
+          , { value: "2", label: "いいえ" }
+          , { value: "0", label: "どちらともいえない" }
+          ]
+        , rules: [
+            new app.RequiredValidator({ messege: "選択してください" })
           ]
         }
       , {
           num: 3
-        , page: 2
-        , question: "質問文3<strong>(太字)</strong>"
+        , page: 3
+        , question: "複数選択設問です。(未選択可)"
         , type: app.QuestionType.CHECKBOX
         , options: [
-            { value: "A", label: "複数選択1" }
-          , { value: "B", label: "複数選択2" }
-          , { value: "C", label: "複数選択3" }
+            { value: "A", label: "スポーツ" }
+          , { value: "B", label: "読書" }
+          , { value: "C", label: "映画鑑賞" }
+          ]
+        }
+      , {
+          num: 4
+        , page:4
+        , question: "複数選択設問です。(選択必須)"
+        , type: app.QuestionType.CHECKBOX
+        , options: [ "赤", "緑", "青" ] // ラベルを省略して値のみ指定できます。
+        , rules: [
+            new app.RequiredValidator({ messege: "選択してください" })
           ]
         }
       ]
