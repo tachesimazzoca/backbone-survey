@@ -20,6 +20,8 @@ var BackboneSurvey = BackboneSurvey || {};
       , singleOptions: [] // option keys that disable the other keys
       , optionAnswers: [] // selected options
       , textAnswers: [] // free text answers
+      , defaultOptionAnswers: []
+      , defaultTextAnswers: []
       , rules: []
       , routeDependencies: []
       }
@@ -154,6 +156,18 @@ var BackboneSurvey = BackboneSurvey || {};
     , parse: function(resp, options) {
         this.sections.reset(resp.sections || []);
         return resp.survey;
+      }
+
+    , startPage: function() {
+        this.sections.each(function(section) {
+          section.clearAnswers();
+          section.set({
+            optionAnswers: section.get("defaultOptionAnswers")
+          , textAnswers: section.get("defaultTextAnswers")
+          });
+        });
+        var p = this.sections.firstPage();
+        this.set({ page: p });
       }
 
     , prevPage: function() {

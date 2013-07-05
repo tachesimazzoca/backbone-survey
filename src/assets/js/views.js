@@ -1,22 +1,22 @@
 var BackboneSurvey = BackboneSurvey || {};
 
-(function($, _, Backbone, app) {
+(function($, _, Backbone) {
   $(function() {
     // AppView
     var AppView = BackboneSurvey.AppView = Backbone.View.extend({
       elPrefix: "survey-"
 
     , initialize: function() {
+        this.$el.hide();
+
         var ev = {};
+        ev["click ." + this.elPrefix + "start"] = "startPage";
         ev["click ." + this.elPrefix + "prev"] = "prevPage";
         ev["click ." + this.elPrefix + "next"] = "nextPage";
         this.delegateEvents(ev);
 
         this.$title = this.$("." + this.elPrefix + "title");
-        this.$content = this.$("#" + this.elPrefix + "content");
-        this.$content.hide();
-        this.$sections = this.$(
-            "#" + this.elPrefix + "content > #" + this.elPrefix + "sections");
+        this.$sections = this.$("#" + this.elPrefix + "sections");
         this.sectionView = {};
 
         this.listenTo(BackboneSurvey.survey, "change", this.render);
@@ -45,11 +45,15 @@ var BackboneSurvey = BackboneSurvey || {};
               view.$("." + me.elPrefix + "error").html("").hide(); // Hide error
               me.$sections.append(view.el);
             });
-          this.$content.show();
+          this.$el.show();
         } else {
-          this.$content.hide();
+          this.$el.hide();
         }
         return this;
+      }
+
+    , startPage: function() {
+        BackboneSurvey.survey.startPage();
       }
 
     , prevPage: function() {
@@ -213,7 +217,6 @@ var BackboneSurvey = BackboneSurvey || {};
 
   var Template = BackboneSurvey.Template = {
     SectionView: '<div class="<%- elPrefix %>question">' +
-      '<span class="<%- elPrefix %>question-num"><%- model.num %>. </span>' +
       '<span class="<%- elPrefix %>question-title"><%= model.question %></span></div>' +
       '<div id="<%- elPrefix %>error-<%- model.num %>" class="<%- elPrefix %>error"></div>' +
       '<div id="<%- elPrefix %>answer-<%- model.num %>" class="<%- elPrefix %>answer"></div>'

@@ -26,9 +26,15 @@
       }
     , sections: [
         {
-          num: 1
+          num: 0 
         , page: 1
-        , question: "テキスト入力設問です。<strong><em>HTMLタグはエスケープされません</em></strong>"
+        , question: "回答なしのセクションです。案内文を表示することができます。"
+        , type: app.QuestionType.NONE
+        }
+      , {
+          num: 1 
+        , page: 2 
+        , question: "Q1. テキスト入力設問です。<strong><em>HTMLタグはエスケープされません</em></strong>"
         , type: app.QuestionType.TEXT
         , label: "<strong>ラベル：</strong>"
         , guide: "<em>(10文字以内)</em>"
@@ -40,7 +46,7 @@
       , {
           num: 2
         , page: 2
-        , question: "単一選択設問です。"
+        , question: "Q2. 単一選択設問です。page 値によりページ内に複数設問を設置することができます。"
         , type: app.QuestionType.RADIO
         , options: [
             { value: "1", label: "はい" }
@@ -54,7 +60,7 @@
       , {
           num: 3
         , page: 3
-        , question: "複数選択設問です。(未選択可)"
+        , question: "Q3. 複数選択設問です。(未選択可)"
         , type: app.QuestionType.CHECKBOX
         , options: [
             { value: "A", label: "スポーツ" }
@@ -64,12 +70,12 @@
           , { value: "OTHER", label: "その他" }
           ]
         , singleOptions: ["NONE", "OTHER"] // 背反値です。
-        , optionAnswers: ["B", "C", "NONE"] // 初期値です。背反制御と矛盾しているため "NONE" のチェックは外れます。
+        , defaultOptionAnswers: ["B", "C", "NONE"] // 初期値です。背反制御と矛盾しているため "NONE" のチェックは外れます。
         }
       , {
           num: 4
         , page: 4
-        , question: "複数選択設問です。(選択必須)"
+        , question: "Q4. 複数選択設問です。(選択必須)"
         , type: app.QuestionType.CHECKBOX
         , options: [ "赤", "緑", "青" ] // ラベルを省略して値のみ指定できます。
         , rules: [
@@ -79,8 +85,7 @@
       ]
     }));
 
-    var view = new app.AppView({ el: $("#survey-app") });
-    app.survey.set("page", 1);
+    var view = new app.AppView({ el: $("#survey-app") }).startPage();
   });
 })(jQuery, BackboneSurvey);
 </script>
@@ -92,7 +97,7 @@
       <div id="survey-sections"></div>
       <input type="button" class="survey-next" value="Next">
       <input type="button" class="survey-prev" value="Prev">
-      <input type="button" class="survey-top" value="TOP">
+      <input type="button" class="survey-start" value="Start">
     </div>
   </div>
 </body>
