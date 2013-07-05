@@ -60,11 +60,14 @@
             { value: "A", label: "スポーツ" }
           , { value: "B", label: "読書" }
           , { value: "C", label: "映画鑑賞" }
+          , { value: "NONE", label: "特になし" }
           ]
+        , singleOptions: ["NONE"]
+        , optionAnswers: ["B", "C", "NONE"] // 初期値です。背反制御と矛盾しているため "NONE" のチェックは外れます。
         }
       , {
           num: 4
-        , page:4
+        , page: 4
         , question: "複数選択設問です。(選択必須)"
         , type: app.QuestionType.CHECKBOX
         , options: [ "赤", "緑", "青" ] // ラベルを省略して値のみ指定できます。

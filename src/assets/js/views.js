@@ -179,7 +179,23 @@ var BackboneSurvey = BackboneSurvey || {};
     var CheckboxAnswerView = BackboneSurvey.CheckboxAnswerView = Backbone.View.extend({
       render: function() {
         this.$el.html(_.template(Template.CheckboxAnswerView)(this.model.toJSON()));
+        var me = this;
+        var fn = function() { me.normalize($(this)); };
+        this.$('input[name^="answer-"]').each(fn).on("change", fn);
         return this;
+      }
+
+    , normalize: function($changed) {
+        var so = this.model.get("singleOptions");
+        if ($changed.prop("checked")) {
+          var v = $changed.val();
+          var f = _.contains(so, v) ?
+            // uncheck other options
+            function() { return this.value != v; } :
+            // uncheck single options
+            function() { return _.contains(so, this.value); };
+          this.$('input[name^="answer-"]').filter(f).prop("checked", false);
+        }
       }
 
     , textAnswers: function() { return []; }
