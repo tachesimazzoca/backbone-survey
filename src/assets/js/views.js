@@ -4,9 +4,7 @@ var BackboneSurvey = BackboneSurvey || {};
   $(function() {
     // AppView
     var AppView = BackboneSurvey.AppView = Backbone.View.extend({
-      el: $("#survey-app")
-
-    , elPrefix: "survey-"
+      elPrefix: "survey-"
 
     , initialize: function() {
         var ev = {};
@@ -53,17 +51,27 @@ var BackboneSurvey = BackboneSurvey || {};
       }
 
     , nextPage: function() {
+        var valid = true;
         for (var k in this.sectionViewMap) {
           var model = BackboneSurvey.survey.sections.findWhere({ num: parseInt(k, 10) });
           if (!model) return;
           model.clearAnswers();
           var view = this.sectionViewMap[k];
+          var $error = view.$("." + this.elPrefix + "error");
+          $error.html("").hide();
           model.set({
             textAnswers: view.textAnswers()
           , optionAnswers: view.optionAnswers()
           }, { validate: true });
+          // RV : Async validation support
+          if (model.validationError) {
+            valid = false;
+            $error.html(_.template(Template.ErrorView)({ errors: model.validationError })).show();
+          }
         }
-        BackboneSurvey.survey.nextPage();
+        if (valid) {
+          BackboneSurvey.survey.nextPage();
+        }
       }
     });
 
@@ -82,7 +90,8 @@ var BackboneSurvey = BackboneSurvey || {};
           elPrefix : this.elPrefix
         , model: this.model.toJSON()
         }));
-        this.$el.append(this.answerView.render().el);
+        this.$("#" + this.elPrefix + "answer-" + this.model.get("num"))
+            .html(this.answerView.render().el);
         return this;
       }
 
@@ -115,7 +124,7 @@ var BackboneSurvey = BackboneSurvey || {};
       return new func({
         model: sectionView.model
       , tagName: "div"
-      , className: sectionView.elPrefix + "answer"
+      , className: sectionView.elPrefix + "answer-item"
       });
     };
 
@@ -190,7 +199,11 @@ var BackboneSurvey = BackboneSurvey || {};
   var Template = BackboneSurvey.Template = {
     SectionView: '<div class="<%- elPrefix %>question">' +
       '<span class="<%- elPrefix %>question-num"><%- model.num %>. </span>' +
-      '<span class="<%- elPrefix %>question-title"><%= model.question %></span></div>'
+      '<span class="<%- elPrefix %>question-title"><%= model.question %></span></div>' +
+      '<div id="<%- elPrefix %>error-<%- model.num %>" class="<%- elPrefix %>error"></div>' +
+      '<div id="<%- elPrefix %>answer-<%- model.num %>" class="<%- elPrefix %>answer"></div>'
+
+  , ErrorView: '<ul><% _.each(errors, function(error) { %><li><%- error %></li><% }); %></ul>'
 
   , TextAnswerView: '<%= label %><input type="text" name="answer-<%- num %>"' +
       '<% if (textAnswers.length !== 0) { %> value="<%- textAnswers[0] %>"<% } %>><%= guide %>'

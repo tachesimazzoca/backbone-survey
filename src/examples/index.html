@@ -75,7 +75,7 @@
       ]
     }));
 
-    var view = new app.AppView();
+    var view = new app.AppView({ el: $("#survey-app") });
     app.survey.set("page", 1);
   });
 })(jQuery, BackboneSurvey);
@@ -86,8 +86,9 @@
     <h1 class="survey-title"></h1>
     <div id="survey-content">
       <div id="survey-sections"></div>
-        <button class="survey-prev">Prev</button> <button class="survey-next">Next</button>
-      </div>
+      <input type="button" class="survey-next" value="Next">
+      <input type="button" class="survey-prev" value="Prev">
+      <input type="button" class="survey-top" value="TOP">
     </div>
   </div>
 </body>

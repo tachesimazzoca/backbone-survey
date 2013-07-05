@@ -54,7 +54,7 @@ var BackboneSurvey = BackboneSurvey || {};
         var errors = [];
         var answers = this.answers(attr);
         if (logger) {
-          logger.debug(answers);
+          logger.debug(["validate at section #" + this.get("num") , answers]);
         }
         var me = this;
         _.each(this.attributes.rules, function(rule) {
@@ -62,8 +62,8 @@ var BackboneSurvey = BackboneSurvey || {};
           var result = rule.validate(answers, me.attributes);
           if (!result.valid) errors.push(result.message);
         });
-        if (errors && logger) {
-          logger.debug(errors);
+        if (errors.length > 0 && logger) {
+          logger.debug(["validationError at section #" + this.get("num") , errors]);
         }
         if (errors.length > 0) return errors;
       }
