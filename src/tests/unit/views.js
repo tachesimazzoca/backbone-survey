@@ -1,4 +1,4 @@
-(function($) {
+(function($, _) {
   module("backbone-survey views");
 
   test("AnswerViewFactory", function() {
@@ -68,13 +68,16 @@
       { value: "1", label: "回答1" }
     , { value: "2", label: "回答2" }
     , { value: "3", label: "回答3" }
+    , { value: "OTHER", label: "その他" }
+    , { value: "NONE", label: "特になし" }
     ];
     var ans = ["1", "3"];
     var section = new BackboneSurvey.Section({
       num: 3
     , type: BackboneSurvey.QuestionType.Checkbox
     , options: opts
-    , optionAnswers: ans
+    , optionAnswers: _.union(ans, ["OTHER"]) // "OTHER" will be unchecked.
+    , singleOptions: ["OTHER", "NONE"]
     });
     var view = new BackboneSurvey.CheckboxAnswerView({ model: section });
     view.render();
@@ -83,9 +86,11 @@
       '<li><label><input type="checkbox" name="answer-3" value="1" checked="checked">回答1</label></li>' +
       '<li><label><input type="checkbox" name="answer-3" value="2">回答2</label></li>' +
       '<li><label><input type="checkbox" name="answer-3" value="3" checked="checked">回答3</label></li>' +
+      '<li><label><input type="checkbox" name="answer-3" value="OTHER">その他</label></li>' +
+      '<li><label><input type="checkbox" name="answer-3" value="NONE">特になし</label></li>' +
       '</ul>'
     );
     deepEqual(view.textAnswers(), []);
     deepEqual(view.optionAnswers(), ans);
   });
-})(jQuery);
+})(jQuery, _);

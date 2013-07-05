@@ -61,8 +61,9 @@
           , { value: "B", label: "読書" }
           , { value: "C", label: "映画鑑賞" }
           , { value: "NONE", label: "特になし" }
+          , { value: "OTHER", label: "その他" }
           ]
-        , singleOptions: ["NONE"]
+        , singleOptions: ["NONE", "OTHER"] // 背反値です。
         , optionAnswers: ["B", "C", "NONE"] // 初期値です。背反制御と矛盾しているため "NONE" のチェックは外れます。
         }
       , {

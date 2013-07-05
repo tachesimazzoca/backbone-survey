@@ -13,7 +13,10 @@ var BackboneSurvey = BackboneSurvey || {};
         this.delegateEvents(ev);
 
         this.$title = this.$("." + this.elPrefix + "title");
-        this.$sections = this.$("#" + this.elPrefix + "sections");
+        this.$content = this.$("#" + this.elPrefix + "content");
+        this.$content.hide();
+        this.$sections = this.$(
+            "#" + this.elPrefix + "content > #" + this.elPrefix + "sections");
         this.sectionView = {};
 
         this.listenTo(BackboneSurvey.survey, "change", this.render);
@@ -38,10 +41,13 @@ var BackboneSurvey = BackboneSurvey || {};
                 model: section
               , className: me.elPrefix + "section"
               });
-              me.$sections.append(view.render().el);
+              view.render();
+              view.$("." + me.elPrefix + "error").html("").hide(); // Hide error
+              me.$sections.append(view.el);
             });
+          this.$content.show();
         } else {
-          // Hide AppView
+          this.$content.hide();
         }
         return this;
       }
@@ -155,30 +161,10 @@ var BackboneSurvey = BackboneSurvey || {};
     , optionAnswers: function() { return []; }
     });
 
-    // RadioAnswerView
-    var RadioAnswerView = BackboneSurvey.RadioAnswerView = Backbone.View.extend({
+    // Proto
+    var OptionAnswerViewProto = {
       render: function() {
-        this.$el.html(_.template(Template.RadioAnswerView)(this.model.toJSON()));
-        return this;
-      }
-
-    , textAnswers: function() { return []; }
-
-    , optionAnswers: function() {
-        var vs = [];
-        var num = this.model.get("num");
-        this.$('[name="answer-' + num + '"]').each(function() {
-          var $this = $(this);
-          if ($this.prop("checked")) vs.push($this.val());
-        });
-        return (_.isEmpty(vs)) ? [] : [vs[0]];
-      }
-    });
-
-    // CheckboxAnswerView
-    var CheckboxAnswerView = BackboneSurvey.CheckboxAnswerView = Backbone.View.extend({
-      render: function() {
-        this.$el.html(_.template(Template.CheckboxAnswerView)(this.model.toJSON()));
+        this.$el.html(_.template(this.template)(this.model.toJSON()));
         var me = this;
         var fn = function() { me.normalize($(this)); };
         this.$('input[name^="answer-"]').each(fn).on("change", fn);
@@ -194,7 +180,8 @@ var BackboneSurvey = BackboneSurvey || {};
             function() { return this.value != v; } :
             // uncheck single options
             function() { return _.contains(so, this.value); };
-          this.$('input[name^="answer-"]').filter(f).prop("checked", false);
+          this.$('input[name^="answer-"]').filter(f)
+              .prop("checked", false).removeAttr("checked");
         }
       }
 
@@ -209,7 +196,19 @@ var BackboneSurvey = BackboneSurvey || {};
         });
         return vs;
       }
+    };
+
+    // RadioAnswerView
+    var RadioAnswerView = BackboneSurvey.RadioAnswerView = Backbone.View.extend({
+      template: Template.RadioAnswerView
     });
+    _.extend(RadioAnswerView.prototype, OptionAnswerViewProto);
+
+    // CheckboxAnswerView
+    var CheckboxAnswerView = BackboneSurvey.CheckboxAnswerView = Backbone.View.extend({
+      template: Template.CheckboxAnswerView
+    });
+    _.extend(CheckboxAnswerView.prototype, OptionAnswerViewProto);
   });
 
   var Template = BackboneSurvey.Template = {
