@@ -35,12 +35,16 @@ var BackboneSurvey = BackboneSurvey || {};
           (attrs = {})[key] = val;
         }
 
-        // :id must be string. 
+        // :id must be a string
         if (typeof(attrs.id) !== "undefined") {
           attrs.id = attrs.id.toString();
         }
+        // :page must be a number
+        if (typeof(attrs.page) !== "undefined") {
+          attrs.page = _.isNumber(attrs.page) ? parseInt(attrs.page, 10) : 0;
+        }
 
-        // Normailze :options
+        // Convert :options string to object
         if (typeof(attrs.options) !== "undefined") {
           var opts = attrs.options || [];
           attrs.options = [];
@@ -56,21 +60,14 @@ var BackboneSurvey = BackboneSurvey || {};
       }
 
     , validate: function(attr, options) {
-        var logger = BackboneSurvey.logger;
         var errors = [];
         var answers = this.answers(attr);
-        if (logger) {
-          logger.debug(["validate at " + this.id , answers]);
-        }
         var me = this;
         _.each(this.attributes.rules, function(rule) {
           if (errors.length > 0) return;
           var result = rule.validate(answers, me.attributes);
           if (!result.valid) errors.push(result.message);
         });
-        if (errors.length > 0 && logger) {
-          logger.debug(["validationError at " + this.id , errors]);
-        }
         if (errors.length > 0) return errors;
       }
 
@@ -159,7 +156,7 @@ var BackboneSurvey = BackboneSurvey || {};
 
     , parse: function(resp, options) {
         this.sections.reset(_.filter(resp.sections || [], function(s) {
-            // Remove invalid id section 
+            // Remove invalid id section
             return s.id.toString().match(/^[-_0-9a-zA-Z]+$/); }));
         return resp.survey;
       }
@@ -188,6 +185,29 @@ var BackboneSurvey = BackboneSurvey || {};
         if (p != this.get("page")) {
           this.set({ page: p });
         }
+      }
+
+    , isFirstPage: function() {
+        return (this.get("page") === this.sections.firstPage());
+      }
+
+    , isLastPage: function() {
+        return (this.get("page") === this.sections.lastPage());
+      }
+
+    , answers: function() {
+        var ans = [];
+        this.sections.each(function(section) {
+          if (section.get("type") === BackboneSurvey.QuestionType.NONE) {
+            return;
+          }
+          ans.push({
+            id: section.id
+          , textAnswers: section.get("textAnswers")
+          , optionAnswers: section.get("optionAnswers")
+          });
+        });
+        return ans;
       }
     });
 

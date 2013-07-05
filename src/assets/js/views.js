@@ -44,6 +44,11 @@ var BackboneSurvey = BackboneSurvey || {};
               view.$("." + me.elPrefix + "error").html("").hide(); // Hide error
               me.$sections.append(view.el);
             });
+          if (BackboneSurvey.survey.isFirstPage()) {
+            this.$("." + this.elPrefix + "prev").hide();
+          } else {
+            this.$("." + this.elPrefix + "prev").show();
+          }
           this.$el.show();
         } else {
           this.$el.hide();
@@ -79,7 +84,12 @@ var BackboneSurvey = BackboneSurvey || {};
           }
         }
         if (valid) {
-          BackboneSurvey.survey.nextPage();
+          if (BackboneSurvey.survey.isLastPage()) {
+            this.$el.html("");
+            this.trigger("completed", this);
+          } else {
+            BackboneSurvey.survey.nextPage();
+          }
         }
       }
     });

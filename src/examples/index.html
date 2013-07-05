@@ -9,17 +9,9 @@
 <script type="text/javascript" src="../lib/backbone/backbone-min.js"></script>
 <script type="text/javascript" src="../assets/js/backbone-survey.js"></script>
 <script type="text/javascript">
-(function($, app) {
+(function($) {
   $(function() {
-    var Logger = function() {}
-    Logger.prototype = {
-      info: function(msg) { console.log(msg); }
-    , warn: function(msg) { console.log(msg); }
-    , debug: function(msg) { console.log(msg); }
-    };
-    app.logger = new Logger();
-
-    app.survey.set(app.survey.parse({
+    BackboneSurvey.survey.set(BackboneSurvey.survey.parse({
       survey: {
         title: "テストアンケート"
       , page: 0
@@ -31,41 +23,46 @@
         , question: "回答なしのセクションです。案内文を表示することができます。"
         }
       , {
-          id: '"><script>alert("XSS");<' + '/script><input type="hidden'
+          id: 'Invalid ID!!(^^;)'
         , page: 1
-        , question: "IDは文字列 [-_0-9a-zA-Z]+ です。不正なIDの設問は読み込まれません"
+        , question: "IDに利用可能な文字は [-_0-9a-zA-Z]+ です。不正IDの設問は読み込まれません"
         }
       , {
           id: "q1"
         , page: 2
         , question: "Q1. テキスト入力設問です。<strong><em>HTMLタグはエスケープされません</em></strong>"
-        , type: app.QuestionType.TEXT
+        , type: BackboneSurvey.QuestionType.TEXT
         , label: "<strong>ラベル：</strong>"
-        , guide: "<em>(10文字以内)</em>"
+        , guide: "<em>(2..10文字以内)</em>"
         , rules: [
-            new app.RequiredValidator({ message: "入力してください" })
-          , new app.RangeLengthValidator({ message: "10文字以内で入力してください", max: 10 })
+            new BackboneSurvey.RequiredValidator({ message: "入力してください" })
+          , new BackboneSurvey.RangeLengthValidator({
+              message: "2..10文字以内で入力してください"
+            , min: 2
+            , max: 10
+            })
           ]
         }
       , {
           id: "q2"
+          // page 値を合わせることで、複数設問を表示できます。
         , page: 2
-        , question: "Q2. 単一選択設問です。page 値によりページ内に複数設問を設置することができます。"
-        , type: app.QuestionType.RADIO
+        , question: "Q2. 単一選択設問です。"
+        , type: BackboneSurvey.QuestionType.RADIO
         , options: [
             { value: "1", label: "はい" }
           , { value: "2", label: "いいえ" }
           , { value: "0", label: "どちらともいえない" }
           ]
         , rules: [
-            new app.RequiredValidator({ message: "選択してください" })
+            new BackboneSurvey.RequiredValidator({ message: "選択してください" })
           ]
         }
       , {
           id: "q3"
         , page: 3
         , question: "Q3. 複数選択設問です。(未選択可)"
-        , type: app.QuestionType.CHECKBOX
+        , type: BackboneSurvey.QuestionType.CHECKBOX
         , options: [
             { value: "A", label: "スポーツ" }
           , { value: "B", label: "読書" }
@@ -73,34 +70,43 @@
           , { value: "NONE", label: "特になし" }
           , { value: "OTHER", label: "その他" }
           ]
-        , singleOptions: ["NONE", "OTHER"] // 背反値です。
-        , defaultOptionAnswers: ["B", "C", "NONE"] // 初期値です。背反制御と矛盾しているため "NONE" のチェックは外れます。
+        // 背反値です。
+        , singleOptions: ["NONE", "OTHER"]
+        // 初期値です。背反制御と矛盾しているため "NONE" のチェックは外れます。
+        , defaultOptionAnswers: ["B", "C", "NONE"]
         }
       , {
           id: "q4"
         , page: 4
         , question: "Q4. 複数選択設問です。(選択必須)"
-        , type: app.QuestionType.CHECKBOX
-        , options: [ "赤", "緑", "青" ] // ラベルを省略して値のみ指定できます。
+        , type: BackboneSurvey.QuestionType.CHECKBOX
+        // ラベルを省略して値のみ指定できます。
+        , options: [ "赤", "緑", "青" ]
         , rules: [
-            new app.RequiredValidator({ message: "選択してください" })
+            new BackboneSurvey.RequiredValidator({ message: "選択してください" })
           ]
         }
       ]
     }));
 
-    var view = new app.AppView({ el: $("#survey-app") }).startPage();
+    // el: でアンケートを表示する jQuery オブジェクトを指定します。
+    var view = new BackboneSurvey.AppView({ el: $("#survey-app") });
+    // 回答完了後に completed でイベントフックが呼ばれます。
+    view.on("completed", function() {
+      console.log(["completed",  BackboneSurvey.survey.answers()]); });
+    // AppView#startPage() でアンケート開始します。
+    view.startPage();
   });
 })(jQuery, BackboneSurvey);
 </script>
 </head>
 <body>
   <div id="survey-app">
-    <h1 class="survey-title"></h1>
-    <div id="survey-sections"></div>
-    <input type="button" class="survey-next" value="Next">
-    <input type="button" class="survey-prev" value="Prev">
-    <input type="button" class="survey-start" value="Start">
+    <h1 class="survey-title"></h1><!-- アンケートタイトル -->
+    <div id="survey-sections"></div><!-- アンケート設問(必須) -->
+    <input type="button" class="survey-next" value="Next"><!-- 次ページに進みます(必須) -->
+    <input type="button" class="survey-prev" value="Prev"><!-- 前ページに戻ります -->
+    <p><a class="survey-start" href="javascript:void(0);">はじめからやり直す</a></p>
   </div>
 </body>
 </html>
