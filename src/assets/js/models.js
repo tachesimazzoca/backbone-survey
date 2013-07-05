@@ -9,8 +9,7 @@ var BackboneSurvey = BackboneSurvey || {};
       }
 
     , defaults: {
-        num: 0
-      , page: 0
+        page: 0
       , type: BackboneSurvey.QuestionType.NONE
       , question: ""
       , label: ""
@@ -36,7 +35,12 @@ var BackboneSurvey = BackboneSurvey || {};
           (attrs = {})[key] = val;
         }
 
-        // Normailze attrs.options
+        // :id must be string. 
+        if (typeof(attrs.id) !== "undefined") {
+          attrs.id = attrs.id.toString();
+        }
+
+        // Normailze :options
         if (typeof(attrs.options) !== "undefined") {
           var opts = attrs.options || [];
           attrs.options = [];
@@ -56,7 +60,7 @@ var BackboneSurvey = BackboneSurvey || {};
         var errors = [];
         var answers = this.answers(attr);
         if (logger) {
-          logger.debug(["validate at section #" + this.get("num") , answers]);
+          logger.debug(["validate at " + this.id , answers]);
         }
         var me = this;
         _.each(this.attributes.rules, function(rule) {
@@ -65,7 +69,7 @@ var BackboneSurvey = BackboneSurvey || {};
           if (!result.valid) errors.push(result.message);
         });
         if (errors.length > 0 && logger) {
-          logger.debug(["validationError at section #" + this.get("num") , errors]);
+          logger.debug(["validationError at " + this.id , errors]);
         }
         if (errors.length > 0) return errors;
       }
@@ -154,7 +158,9 @@ var BackboneSurvey = BackboneSurvey || {};
       }
 
     , parse: function(resp, options) {
-        this.sections.reset(resp.sections || []);
+        this.sections.reset(_.filter(resp.sections || [], function(s) {
+            // Remove invalid id section 
+            return s.id.toString().match(/^[-_0-9a-zA-Z]+$/); }));
         return resp.survey;
       }
 

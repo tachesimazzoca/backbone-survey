@@ -26,9 +26,9 @@
 
   test("Sections", function() {
     var sections = new BackboneSurvey.Sections([
-      { num: 1 , page: 1 }
-    , { num: 2 , page: 1 }
-    , { num: 3 , page: 2 }
+      { id: "q1" , page: 1 }
+    , { id: "q2" , page: 1 }
+    , { id: "q3" , page: 2 }
     ]);
     deepEqual(sections.firstPage(), 1);
     deepEqual(sections.lastPage(), 2);

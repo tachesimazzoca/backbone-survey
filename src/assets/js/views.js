@@ -36,8 +36,7 @@ var BackboneSurvey = BackboneSurvey || {};
               if (section.get("page") !== BackboneSurvey.survey.get("page")) {
                 return;
               }
-              var num = section.get("num");
-              var view = me.sectionViewMap[num] = new SectionView({
+              var view = me.sectionViewMap[section.id] = new SectionView({
                 model: section
               , className: me.elPrefix + "section"
               });
@@ -63,7 +62,7 @@ var BackboneSurvey = BackboneSurvey || {};
     , nextPage: function() {
         var valid = true;
         for (var k in this.sectionViewMap) {
-          var model = BackboneSurvey.survey.sections.findWhere({ num: parseInt(k, 10) });
+          var model = BackboneSurvey.survey.sections.get(k);
           if (!model) return;
           model.clearAnswers();
           var view = this.sectionViewMap[k];
@@ -100,7 +99,7 @@ var BackboneSurvey = BackboneSurvey || {};
           elPrefix : this.elPrefix
         , model: this.model.toJSON()
         }));
-        this.$("#" + this.elPrefix + "answer-" + this.model.get("num"))
+        this.$("#" + this.elPrefix + "answer-" + this.model.id)
             .html(this.answerView.render().el);
         return this;
       }
@@ -157,8 +156,7 @@ var BackboneSurvey = BackboneSurvey || {};
       }
 
     , textAnswers: function() {
-        var num = this.model.get("num");
-        var v = this.$('[name="answer-' + num + '"]').val();
+        var v = this.$('[name="answer-' + this.model.id + '"]').val();
         return (_.isEmpty(v)) ? [] : [v];
       }
 
@@ -193,8 +191,7 @@ var BackboneSurvey = BackboneSurvey || {};
 
     , optionAnswers: function() {
         var vs = [];
-        var num = this.model.get("num");
-        this.$('[name="answer-' + num + '"]').each(function() {
+        this.$('[name="answer-' + this.model.id + '"]').each(function() {
           var $this = $(this);
           if ($this.prop("checked")) vs.push($this.val());
         });
@@ -218,21 +215,21 @@ var BackboneSurvey = BackboneSurvey || {};
   var Template = BackboneSurvey.Template = {
     SectionView: '<div class="<%- elPrefix %>question">' +
       '<span class="<%- elPrefix %>question-title"><%= model.question %></span></div>' +
-      '<div id="<%- elPrefix %>error-<%- model.num %>" class="<%- elPrefix %>error"></div>' +
-      '<div id="<%- elPrefix %>answer-<%- model.num %>" class="<%- elPrefix %>answer"></div>'
+      '<div id="<%- elPrefix %>error-<%- model.id %>" class="<%- elPrefix %>error"></div>' +
+      '<div id="<%- elPrefix %>answer-<%- model.id %>" class="<%- elPrefix %>answer"></div>'
 
   , ErrorView: '<ul><% _.each(errors, function(error) { %><li><%- error %></li><% }); %></ul>'
 
-  , TextAnswerView: '<%= label %><input type="text" name="answer-<%- num %>"' +
+  , TextAnswerView: '<%= label %><input type="text" name="answer-<%- id %>"' +
       '<% if (textAnswers.length !== 0) { %> value="<%- textAnswers[0] %>"<% } %>><%= guide %>'
 
   , RadioAnswerView: '<ul><% _.each(options, function(option) { %>' +
-      '<li><label><input type="radio" name="answer-<%- num %>" value="<%- option.value %>"' +
+      '<li><label><input type="radio" name="answer-<%- id %>" value="<%- option.value %>"' +
       '<% if (_.contains(optionAnswers, option.value)) { %> checked="checked"<% } %>>' +
       '<%- option.label %></label></li><% }); %></ul>'
 
   , CheckboxAnswerView: '<ul><% _.each(options, function(option) { %>' +
-      '<li><label><input type="checkbox" name="answer-<%- num %>" value="<%- option.value %>"' +
+      '<li><label><input type="checkbox" name="answer-<%- id %>" value="<%- option.value %>"' +
       '<% if (_.contains(optionAnswers, option.value)) { %> checked="checked"<% } %>>' +
       '<%- option.label %></label></li><% }); %></ul>'
   };

@@ -26,14 +26,18 @@
       }
     , sections: [
         {
-          num: 0 
+          id: "startup"
         , page: 1
         , question: "回答なしのセクションです。案内文を表示することができます。"
-        , type: app.QuestionType.NONE
         }
       , {
-          num: 1 
-        , page: 2 
+          id: '"><script>alert("XSS");<' + '/script><input type="hidden'
+        , page: 1
+        , question: "IDは文字列 [-_0-9a-zA-Z]+ です。不正なIDの設問は読み込まれません"
+        }
+      , {
+          id: "q1"
+        , page: 2
         , question: "Q1. テキスト入力設問です。<strong><em>HTMLタグはエスケープされません</em></strong>"
         , type: app.QuestionType.TEXT
         , label: "<strong>ラベル：</strong>"
@@ -44,7 +48,7 @@
           ]
         }
       , {
-          num: 2
+          id: "q2"
         , page: 2
         , question: "Q2. 単一選択設問です。page 値によりページ内に複数設問を設置することができます。"
         , type: app.QuestionType.RADIO
@@ -58,7 +62,7 @@
           ]
         }
       , {
-          num: 3
+          id: "q3"
         , page: 3
         , question: "Q3. 複数選択設問です。(未選択可)"
         , type: app.QuestionType.CHECKBOX
@@ -73,7 +77,7 @@
         , defaultOptionAnswers: ["B", "C", "NONE"] // 初期値です。背反制御と矛盾しているため "NONE" のチェックは外れます。
         }
       , {
-          num: 4
+          id: "q4"
         , page: 4
         , question: "Q4. 複数選択設問です。(選択必須)"
         , type: app.QuestionType.CHECKBOX
@@ -93,12 +97,10 @@
 <body>
   <div id="survey-app">
     <h1 class="survey-title"></h1>
-    <div id="survey-content">
-      <div id="survey-sections"></div>
-      <input type="button" class="survey-next" value="Next">
-      <input type="button" class="survey-prev" value="Prev">
-      <input type="button" class="survey-start" value="Start">
-    </div>
+    <div id="survey-sections"></div>
+    <input type="button" class="survey-next" value="Next">
+    <input type="button" class="survey-prev" value="Prev">
+    <input type="button" class="survey-start" value="Start">
   </div>
 </body>
 </html>
