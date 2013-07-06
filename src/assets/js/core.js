@@ -1,11 +1,10 @@
 var BackboneSurvey = BackboneSurvey || {};
 
-BackboneSurvey.VERSION = "0.0.0";
+(function() {
+  BackboneSurvey.VERSION = "0.0.0";
 
-(function($, Backbone) {
-  $(function() {
-    BackboneSurvey.Extendable = {
-      extend: Backbone.Model.extend // Use Backbone helper function
-    };
-  });
-})(jQuery, Backbone);
+  BackboneSurvey.Extendable = {
+    // Use the Backbone .extend helper
+    extend: Backbone.Model.extend
+  };
+})();

@@ -11,7 +11,7 @@
 <script type="text/javascript">
 (function($) {
   $(function() {
-    BackboneSurvey.survey.set(BackboneSurvey.survey.parse({
+    var survey = new BackboneSurvey.Survey({
       survey: {
         title: "テストアンケート"
       , page: 0
@@ -87,17 +87,19 @@
           ]
         }
       ]
-    }));
+    }, { parse: true });
 
-    // el: でアンケートを表示する jQuery オブジェクトを指定します。
-    var view = new BackboneSurvey.AppView({ el: $("#survey-app") });
+    var view = new BackboneSurvey.SurveyView({
+      model: survey // BackboneSurvey.Survey
+    , el: $("#survey-app") // アンケートを表示する jQuery オブジェクト
+    });
     // 回答完了後に completed でイベントフックが呼ばれます。
     view.on("completed", function() {
-      console.log(["completed",  BackboneSurvey.survey.answers()]); });
-    // AppView#startPage() でアンケート開始します。
+      console.log(["completed", survey.answers()]); });
+    // SurveyView#startPage() でアンケート開始します。
     view.startPage();
   });
-})(jQuery, BackboneSurvey);
+})(jQuery);
 </script>
 </head>
 <body>
