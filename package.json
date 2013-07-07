@@ -4,6 +4,7 @@
   "private": true,
   "devDependencies": {
     "jshint": "2.1.4",
-    "uglify-js": "1.3.5"
+    "uglify-js": "1.3.5",
+    "yuidocjs": "0.3.44"
   }
 }

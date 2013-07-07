@@ -33,3 +33,7 @@ node_modules:
 
 bower_components:
 	@bower install
+
+docs:
+	@./node_modules/.bin/yuidoc -o build/docs src/assets/js
+

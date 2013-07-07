@@ -1,7 +1,13 @@
+/**
+ * @module backbone-survey
+ */
 var BackboneSurvey = BackboneSurvey || {};
 
 (function() {
-  // Section
+  /**
+   * @class Section
+   * @extends {Backbone.Model}
+   */
   var Section = BackboneSurvey.Section = Backbone.Model.extend({
     constructor: function() {
       Backbone.Model.apply(this, arguments);
@@ -70,6 +76,13 @@ var BackboneSurvey = BackboneSurvey || {};
       if (errors.length > 0) return errors;
     }
 
+    /**
+     * Pick answers according to a section type.
+     *
+     * @method answers
+     * @param {Object} [attr] If it's undefined, Use this.attributes.
+     * @return {Array}
+     */
   , answers: function(attr) {
       attr = attr || this.attributes;
       var vals = [];
@@ -87,6 +100,11 @@ var BackboneSurvey = BackboneSurvey || {};
       return vals;
     }
 
+    /**
+     * Clear answer attributes.
+     *
+     * @method clearAnswers
+     */
   , clearAnswers: function() {
       this.set({
         optionAnswers: []
@@ -95,10 +113,17 @@ var BackboneSurvey = BackboneSurvey || {};
     }
   });
 
-  // Sections
+  /**
+   * @class Sections
+   * @extends {Backbone.Collection}
+   */
   var Sections = BackboneSurvey.Sections = Backbone.Collection.extend({
     model: Section
 
+    /**
+     * @method fistPage
+     * @return {Number}
+     */
   , firstPage: function() {
       return this.reduce(function(memo, model) {
         var p = model.get("page");
@@ -106,6 +131,10 @@ var BackboneSurvey = BackboneSurvey || {};
       }, 0);
     }
 
+    /**
+     * @method lastPage
+     * @return {Number}
+     */
   , lastPage: function() {
       return this.reduce(function(memo, model) {
         var p = model.get("page");
@@ -113,6 +142,11 @@ var BackboneSurvey = BackboneSurvey || {};
       }, 0);
     }
 
+    /**
+     * @method prevPage
+     * @param {Number} currentPage
+     * @return {Number}
+     */
   , prevPage: function(currentPage) {
       var ps = [];
       this.each(function(model) {
@@ -126,6 +160,11 @@ var BackboneSurvey = BackboneSurvey || {};
           (currentPage === 0) ? this.firstPage() : currentPage;
     }
 
+    /**
+     * @method nextPage
+     * @param {Number} currentPage
+     * @return {Number}
+     */
   , nextPage: function(currentPage) {
       var ps = [];
       this.each(function(model) {
@@ -141,9 +180,16 @@ var BackboneSurvey = BackboneSurvey || {};
     }
   });
 
-  // Survey
+  /**
+   * @class Survey
+   * @extends {Backbone.Model}
+   */
   var Survey = BackboneSurvey.Survey = Backbone.Model.extend({
     constructor: function() {
+      /**
+       * @property sections
+       * @type {Sections}
+       */
       this.sections = new Sections();
       Backbone.Model.apply(this, arguments);
     }
@@ -153,6 +199,24 @@ var BackboneSurvey = BackboneSurvey || {};
     , page: 0
     }
 
+    /**
+     * Parser method for using `{ parse: true }` option.
+     *
+<pre><code>var survey = new BackboneSurvey.Survey({
+    survey: {
+      // Survey.attributes ....
+    }
+  , sections: [
+      // An array of Section.attributes ....
+    ]
+}, { parse: true });
+</code></pre>
+     *
+     * @method parse
+     * @param {Object} resp
+     * @param {Object} options
+     * @return {Object} attributes
+     */
   , parse: function(resp, options) {
       this.sections.reset(_.filter(resp.sections || [], function(s) {
           // Remove invalid id section
@@ -160,6 +224,11 @@ var BackboneSurvey = BackboneSurvey || {};
       return resp.survey;
     }
 
+    /**
+     * Move to a first page, and reset all answers.
+     *
+     * @method startPage
+     */
   , startPage: function() {
       this.sections.each(function(section) {
         section.clearAnswers();
@@ -172,6 +241,11 @@ var BackboneSurvey = BackboneSurvey || {};
       this.set({ page: p });
     }
 
+    /**
+     * Move to a prev page.
+     *
+     * @method prevPage
+     */
   , prevPage: function() {
       var p = this.sections.prevPage(this.get("page"));
       if (p != this.get("page")) {
@@ -179,6 +253,11 @@ var BackboneSurvey = BackboneSurvey || {};
       }
     }
 
+    /**
+     * Move to a next page.
+     *
+     * @method nextPage
+     */
   , nextPage: function() {
       var p = this.sections.nextPage(this.get("page"));
       if (p != this.get("page")) {
@@ -186,14 +265,28 @@ var BackboneSurvey = BackboneSurvey || {};
       }
     }
 
+    /**
+     * @method isFirstPage
+     * @return {Boolean}
+     */
   , isFirstPage: function() {
       return (this.get("page") === this.sections.firstPage());
     }
 
+    /**
+     * @method isLastPage
+     * @return {Boolean}
+     */
   , isLastPage: function() {
       return (this.get("page") === this.sections.lastPage());
     }
 
+    /**
+     * Returns an array of all answers.
+     *
+     * @method answers
+     * @return {Array}
+     */
   , answers: function() {
       var ans = [];
       this.sections.each(function(section) {
@@ -209,7 +302,6 @@ var BackboneSurvey = BackboneSurvey || {};
       return ans;
     }
   });
-
   // Global Survey instance
   BackboneSurvey.survey = new Survey();
 })();
