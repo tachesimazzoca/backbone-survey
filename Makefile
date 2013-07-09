@@ -23,6 +23,10 @@ checkstyle: node_modules
 	@./node_modules/.bin/jshint src/assets/js/*.js --config src/.jshintrc
 	@./node_modules/.bin/jshint src/tests/unit/*.js --config src/.jshintrc
 
+.PHONY: docs 
+docs:
+	@./node_modules/.bin/yuidoc -o build/docs src/assets/js
+
 .PHONY: clean
 clean:
 	@rm -rf build/
@@ -33,7 +37,3 @@ node_modules:
 
 bower_components:
 	@bower install
-
-docs:
-	@./node_modules/.bin/yuidoc -o build/docs src/assets/js
-
