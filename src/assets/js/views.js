@@ -380,7 +380,7 @@ var BackboneSurvey = BackboneSurvey || {};
     template: '<ul><% _.each(options, function(option, i) { %>' +
       '<li><label><input type="radio" name="answer-<%- id %>" value="<%- option.value %>"' +
       '<% if (_.contains(answers, option.value)) { %> checked="checked"<% } %>>' +
-      '<%- option.label %></label>' +
+      '<%= option.label %></label>' +
       '<% if (option.sub) { %>' +
       ' <input type="text" name="sub-<%- id %>-<%- i %>" placeholder="<%- option.sub.placeholder %>"' +
       '<% if (!_.isEmpty(subAnswer[option.value])) { %> value="<%- subAnswer[option.value] %>"<% } %>>' +
@@ -398,7 +398,7 @@ var BackboneSurvey = BackboneSurvey || {};
     template: '<ul><% _.each(options, function(option, i) { %>' +
       '<li><label><input type="checkbox" name="answer-<%- id %>" value="<%- option.value %>"' +
       '<% if (_.contains(answers, option.value)) { %> checked="checked"<% } %>>' +
-      '<%- option.label %></label>' +
+      '<%= option.label %></label>' +
       '<% if (option.sub) { %>' +
       ' <input type="text" name="sub-<%- id %>-<%- i %>" placeholder="<%- option.sub.placeholder %>"' +
       '<% if (!_.isEmpty(subAnswer[option.value])) { %> value="<%- subAnswer[option.value] %>"<% } %>>' +
