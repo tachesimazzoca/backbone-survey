@@ -72,6 +72,7 @@ var BackboneSurvey = BackboneSurvey || {};
      */
   , startPage: function() {
       this.model.startPage();
+      this.trigger("start", this);
     }
 
     /**
@@ -79,6 +80,7 @@ var BackboneSurvey = BackboneSurvey || {};
      */
   , prevPage: function() {
       this.model.prevPage();
+      this.trigger("prev", this);
     }
 
     /**
@@ -114,6 +116,7 @@ var BackboneSurvey = BackboneSurvey || {};
           this.complete();
         } else {
           this.model.nextPage();
+          this.trigger("next", this);
         }
       }
     }
