@@ -18,6 +18,7 @@ var BackboneSurvey = BackboneSurvey || {};
     , routeDependencies: []
     , type: BackboneSurvey.QuestionType.NONE
     , question: ""
+    , contents: ""
     , label: ""
     , guide: ""
     , fields: [] // multi fields

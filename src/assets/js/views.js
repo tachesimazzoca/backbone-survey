@@ -133,6 +133,7 @@ var BackboneSurvey = BackboneSurvey || {};
 
   , template: '<div class="<%- elPrefix %>question">' +
       '<span class="<%- elPrefix %>question-title"><%= model.question %></span></div>' +
+      '<div class="<%- elPrefix %>question-contents"><%= model.contents %></div>' +
       '<div id="<%- elPrefix %>error-<%- model.id %>" class="<%- elPrefix %>error"></div>' +
       '<div id="<%- elPrefix %>answer-<%- model.id %>" class="<%- elPrefix %>answer"></div>'
 
