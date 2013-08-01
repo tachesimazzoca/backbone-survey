@@ -131,11 +131,12 @@ var BackboneSurvey = BackboneSurvey || {};
   var SectionView = BackboneSurvey.SectionView = Backbone.View.extend({
     tagName: "div"
 
-  , template: '<div class="<%- elPrefix %>question">' +
-      '<span class="<%- elPrefix %>question-title"><%= model.question %></span></div>' +
-      '<div class="<%- elPrefix %>question-contents"><%= model.contents %></div>' +
+  , template: '<div class="<%- elPrefix %>question"><%= model.question %></div>' +
+      '<% if (model.contents.main) { %><div class="<%- elPrefix %>contents-main"><%= model.contents.main %></div><% } %>' +
       '<div id="<%- elPrefix %>error-<%- model.id %>" class="<%- elPrefix %>error"></div>' +
-      '<div id="<%- elPrefix %>answer-<%- model.id %>" class="<%- elPrefix %>answer"></div>'
+      '<% if (model.contents.caption) { %><div class="<%- elPrefix %>contents-caption"><%= model.contents.caption %></div><% } %>' +
+      '<div id="<%- elPrefix %>answer-<%- model.id %>" class="<%- elPrefix %>answer"></div>' +
+      '<% if (model.contents.note) { %><div class="<%- elPrefix %>contents-note"><%= model.contents.note %></div><% } %>'
 
   , initialize: function() {
       this.elPrefix = this.elPrefix || "survey-";

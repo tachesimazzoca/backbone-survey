@@ -31,11 +31,19 @@
           id: "q1"
         , page: 2
         , question: "Q1. 単一テキスト入力設問です。<strong><em>HTMLタグはエスケープされません</em></strong>"
-        , contents:
-            '<p>任意のHTMLコンテンツを表示できます。</p>' +
+        , contents: {
+            // タイトル直下
+            main: '<p>任意のHTMLコンテンツを表示できます。</p>' +
             '<div class="survey-question-image"><img src="images/red.gif"></div>' +
             '<div class="survey-question-image"><img src="images/green.gif"></div>' +
             '<div class="survey-question-image"><img src="images/blue.gif"></div>'
+            // 回答直前
+          , caption: '<em>回答直前のHTMLを表示できます。</em>'
+            // 回答直後
+          , note: '<ul><li>回答直後のHTMLを表示できます。</li><li>HTMLタグが使えます</li></ul>'
+            // これらのキーはデフォルトテンプレートで利用されているだけです。
+            // テンプレートをカスタマイズすれば任意のキーであらゆるコンテンツを渡せます。
+          }
         , type: BackboneSurvey.QuestionType.TEXT
         , label: "<strong>ラベル：</strong>"
         , guide: "<em>(2..10文字以内)</em>"
