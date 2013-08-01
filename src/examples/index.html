@@ -90,7 +90,16 @@
                 })
               ]
             }
-          , { label: "サブ設問3" }
+          , {
+              label: "サブ設問3"
+            , rules: [
+                new BackboneSurvey.PatternValidator({
+                  message: "サブ設問3はアルファベットで入力してください"
+                , pattern: "^(?:|[a-zA-Z]+)$"
+                })
+              ]
+            }
+          , { label: "サブ設問4" }
           ]
         }
       , {
