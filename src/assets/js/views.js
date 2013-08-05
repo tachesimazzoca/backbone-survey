@@ -407,6 +407,7 @@ var BackboneSurvey = BackboneSurvey || {};
 
   , initialize: function() {
       this.elPrefix = this.elPrefix || "survey-";
+      this.multiple = this.model.get("type") === BackboneSurvey.QuestionType.CHECKBOX;
       this.$selected = null;
     }
 
@@ -421,7 +422,7 @@ var BackboneSurvey = BackboneSurvey || {};
       }));
 
       var me = this;
-      var sel = this.elPrefix + 'selected';
+      var sel = this.elPrefix + "selected";
 
       // subDialog
       var $subDialog = this.$('.' + this.elPrefix + 'sub-dialog');
@@ -435,13 +436,19 @@ var BackboneSurvey = BackboneSurvey || {};
       this.$('a').on("click", function() {
         if (me.$selected) return;
         $this = $(this);
-        me.$('a').removeClass(sel);
-        $this.addClass(sel);
-        var $sub = $this.find('input[name^="sub-"]');
-        if ($sub.length) {
-          me.$selected = $this;
-          $subDialog.find('input').val($sub.val());
-          me.$('.' + me.elPrefix + 'sub-dialog').show();
+        if (me.multiple) {
+          $this.toggleClass(sel);
+        } else {
+          me.$('a').removeClass(sel);
+          $this.addClass(sel);
+        }
+        if ($this.hasClass(sel)) {
+          var $sub = $this.find('input[name^="sub-"]');
+          if ($sub.length) {
+            me.$selected = $this;
+            $subDialog.find('input').val($sub.val());
+            me.$('.' + me.elPrefix + 'sub-dialog').show();
+          }
         }
       });
       return this;
@@ -477,7 +484,7 @@ var BackboneSurvey = BackboneSurvey || {};
       if (_.isEmpty(sub)) {
         var v = $selected.find('input[name^="answer-"]').val();
         var option = _.find(this.model.get("options"), function(o) { return o.value == v; });
-        if (option) $label.text(option.label);
+        if (option) $label.html(option.label);
       } else {
         $label.text(sub);
       }
