@@ -32,6 +32,14 @@ var BackboneSurvey = BackboneSurvey || {};
       this.listenTo(this.model, "completed", this.complete);
     }
 
+  , show: function($el) {
+      $el.show();
+    }
+
+  , hide: function($el) {
+      $el.hide();
+    }
+
     /**
      * @method render
      * @chainable
@@ -40,6 +48,7 @@ var BackboneSurvey = BackboneSurvey || {};
       if (BackboneSurvey.logger) {
         BackboneSurvey.logger.debug(["SurveyView#render", this.model]);
       }
+      this.hide(this.$el);
       this.$title.html(this.model.get("title") || "");
       this.$sections.html("");
       this.sectionViewMap = {};
@@ -60,9 +69,7 @@ var BackboneSurvey = BackboneSurvey || {};
         } else {
           this.$("." + this.elPrefix + "prev").show();
         }
-        this.$el.show();
-      } else {
-        this.$el.hide();
+        this.show(this.$el);
       }
       return this;
     }
