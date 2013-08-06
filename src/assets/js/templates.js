@@ -75,10 +75,12 @@ var BackboneSurvey = BackboneSurvey || {};
       '<% } %>' +
       '<label for="<%- elPrefix %>answer-<%- model.id %>-<%- i %>"><%= option.label %></label>' +
       '</li><% }); %></ul>' +
-      '<div class="<%= elPrefix %>sub-dialog"><div class="<%= elPrefix %>sub-dialog-inner">' +
+      '<div class="<%- elPrefix %>dialog" style="display: none;"><div class="<%- elPrefix %>sub-dialog-inner">' +
       '<input type="text"><button>OK</button></div></div>'
 
     /**
+     * See {{#crossLink "ImageCardAnswerView"}}{{/crossLink}}
+     *
      * @property ImageCardAnswerView
      * @type {String}
      */
@@ -92,7 +94,7 @@ var BackboneSurvey = BackboneSurvey || {};
       '<label <% if (_.contains(model.answers, option.value)) { %> class="survey-selected"<% } %>>' +
       '<%= option.label %></label>' +
       '</li><% }); %></ul>' +
-      '<div class="<%= elPrefix %>sub-dialog"><div class="<%= elPrefix %>sub-dialog-inner">' +
+      '<div class="<%- elPrefix %>dialog" style="display: none;"><div class="<%- elPrefix %>sub-dialog-inner">' +
       '<input type="text"><button>OK</button></div></div>'
   };
 })();

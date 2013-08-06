@@ -490,6 +490,8 @@ var BackboneSurvey = BackboneSurvey || {};
   var TextCardAnswerView = BackboneSurvey.TextCardAnswerView = Backbone.View.extend({
     templateName: "TextCardAnswerView"
 
+  , $dialog: null
+
   , initialize: function() {
       this.elPrefix = this.elPrefix || "survey-";
       this.multiple = this.model.get("type") === BackboneSurvey.QuestionType.CHECKBOX;
@@ -511,7 +513,10 @@ var BackboneSurvey = BackboneSurvey || {};
       var sel = this.elPrefix + "selected";
 
       // subDialog
-      var $subDialog = this.$('.' + this.elPrefix + 'sub-dialog');
+      var $subDialog = this.$dialog || this.$('.' + this.elPrefix + 'dialog');
+      if (_.isString($subDialog)) {
+        $subDialog = $($subDialog);
+      }
       $subDialog.hide();
       $subDialog.find('button').on("click", function() {
         me.updateSubAnswer(me.$selected, $subDialog.find('input').val());
@@ -536,7 +541,7 @@ var BackboneSurvey = BackboneSurvey || {};
             $subDialog.find('input')
               .val($sub.val())
               .attr("placeholder", $sub.attr("placeholder"));
-            me.$('.' + me.elPrefix + 'sub-dialog').show();
+            $subDialog.show();
           }
         }
         me.trigger("answer");
@@ -616,6 +621,8 @@ var BackboneSurvey = BackboneSurvey || {};
   var ImageCardAnswerView = BackboneSurvey.ImageCardAnswerView = Backbone.View.extend({
     templateName: "ImageCardAnswerView"
 
+  , $dialog: null
+
   , initialize: function() {
       this.elPrefix = this.elPrefix || "survey-";
       this.multiple = this.model.get("type") === BackboneSurvey.QuestionType.CHECKBOX;
@@ -636,7 +643,13 @@ var BackboneSurvey = BackboneSurvey || {};
       var sel = this.elPrefix + "selected";
 
       // subDialog
-      var $subDialog = this.$('.' + this.elPrefix + 'sub-dialog');
+      var $subDialog = this.$dialog || this.$('.' + this.elPrefix + 'dialog');
+      if (_.isString($subDialog)) {
+        $subDialog = $($subDialog);
+      }
+      if (!$subDialog.length) {
+        console.log("CardAnswerView.$dialog is not a valid DOM element.");
+      }
       $subDialog.hide();
       $subDialog.find('button').on("click", function() {
         me.updateSubAnswer(me.$selected, $subDialog.find('input').val());
@@ -659,7 +672,7 @@ var BackboneSurvey = BackboneSurvey || {};
           if ($sub.length) {
             me.$selected = $li;
             $subDialog.find('input').val($sub.val());
-            me.$('.' + me.elPrefix + 'sub-dialog').show();
+            $subDialog.show();
           }
         }
         me.trigger("answer");
