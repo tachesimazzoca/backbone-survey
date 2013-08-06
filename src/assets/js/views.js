@@ -557,7 +557,7 @@ var BackboneSurvey = BackboneSurvey || {};
 
   , initialize: function() {
       this.elPrefix = this.elPrefix || "survey-";
-      this.multiple = this.model.get("type") === BackboneSurvey.QuestionType.CHECKBOX;
+      this.multiple = this.model.get("type").multiple();
       this.$selected = null;
     }
 
@@ -693,7 +693,7 @@ var BackboneSurvey = BackboneSurvey || {};
 
   , initialize: function() {
       this.elPrefix = this.elPrefix || "survey-";
-      this.multiple = this.model.get("type") === BackboneSurvey.QuestionType.CHECKBOX;
+      this.multiple = this.model.get("type").multiple();
       this.$selected = null;
     }
 
