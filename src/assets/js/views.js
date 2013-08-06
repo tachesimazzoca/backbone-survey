@@ -644,19 +644,20 @@ var BackboneSurvey = BackboneSurvey || {};
         $subDialog.hide();
       });
       // options
-      this.$('a').on("click", function() {
+      this.$('label').on("click", function() {
         if (me.$selected) return;
         $this = $(this);
         if (me.multiple) {
           $this.toggleClass(sel);
         } else {
-          me.$('a').removeClass(sel);
+          me.$('label').removeClass(sel);
           $this.addClass(sel);
         }
         if ($this.hasClass(sel)) {
-          var $sub = $this.find('input[name^="sub-"]');
+          var $li = $this.parent();
+          var $sub = $li.find('input[name^="sub-"]');
           if ($sub.length) {
-            me.$selected = $this;
+            me.$selected = $li;
             $subDialog.find('input').val($sub.val());
             me.$('.' + me.elPrefix + 'sub-dialog').show();
           }
@@ -672,8 +673,11 @@ var BackboneSurvey = BackboneSurvey || {};
      */
   , answers: function() {
       var vs = [];
-      this.$('a[class="' + this.elPrefix + 'selected"] > input[name^="answer-"]').each(function() {
-        vs.push($(this).val());
+      this.$('label[class="' + this.elPrefix + 'selected"]').each(function() {
+        var $li = $(this).parent();
+        $li.find('input[name^="answer-"]').each(function() {
+          vs.push($(this).val());
+        });
       });
       return vs;
     }
@@ -701,7 +705,7 @@ var BackboneSurvey = BackboneSurvey || {};
      */
   , updateSubAnswer: function($selected, sub) {
       $selected.find('input[name^="sub-"]').val(sub);
-      $label = $selected.find('span');
+      $label = $selected.find('label');
       if (_.isEmpty(sub)) {
         var v = $selected.find('input[name^="answer-"]').val();
         var option = _.find(this.model.get("options"), function(o) { return o.value == v; });

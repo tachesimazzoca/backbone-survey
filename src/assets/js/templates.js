@@ -83,15 +83,15 @@ var BackboneSurvey = BackboneSurvey || {};
      * @type {String}
      */
   , ImageCardAnswerView: '<ul><% _.each(model.options, function(option, i) { %>' +
-      '<li><a onclick="return false;" href="javascript:void();"' +
-      ' <% if (_.contains(model.answers, option.value)) { %> class="survey-selected"<% } %>>' +
+      '<li>' +
       '<input type="hidden" name="answer-<%- model.id %>" value="<%- option.value %>">' +
       '<% if (option.sub) { %>' +
       '<input type="hidden" name="sub-<%- model.id %>-<%- i %>"' +
       '<% if (!_.isEmpty(model.subAnswer[option.value])) { %> value="<%- model.subAnswer[option.value] %>"<% } %>>' +
       '<% } %>' +
-      '<span><%= option.label %></span>' +
-      '</a></li><% }); %></ul>' +
+      '<label <% if (_.contains(model.answers, option.value)) { %> class="survey-selected"<% } %>>' +
+      '<%= option.label %></label>' +
+      '</li><% }); %></ul>' +
       '<div class="<%= elPrefix %>sub-dialog"><div class="<%= elPrefix %>sub-dialog-inner">' +
       '<input type="text"><button>OK</button></div></div>'
   };
