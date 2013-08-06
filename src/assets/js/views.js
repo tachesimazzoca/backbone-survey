@@ -574,7 +574,7 @@ var BackboneSurvey = BackboneSurvey || {};
      */
   , answers: function() {
       var vs = [];
-      this.$('[name="answer-' + this.model.id + '"]').each(function() {
+      this.$('input[name="answer-' + this.model.id + '"]').each(function() {
         var $this = $(this);
         if ($this.prop("checked")) vs.push($this.val());
       });
@@ -588,10 +588,12 @@ var BackboneSurvey = BackboneSurvey || {};
   , subAnswer: function() {
       var sub = {};
       var opts = this.model.get("options");
+      var ans = this.answers();
       var me = this;
       _.each(opts, function(opt, i) {
         if (!opt.sub) return;
-        var $ov = me.$('input[name^="sub-' + me.model.id + '-' + i + '"]');
+        if (!_.contains(ans, opt.value)) return;
+        var $ov = me.$('input[name="sub-' + me.model.id + '-' + i + '"]');
         if (!_.isEmpty($ov.val())) {
           sub[opt.value] = $ov.val();
         }
