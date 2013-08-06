@@ -248,6 +248,10 @@ var BackboneSurvey = BackboneSurvey || {};
         case BackboneSurvey.QuestionType.CHECKBOX:
           func = BackboneSurvey.CheckboxAnswerView;
           break;
+        case BackboneSurvey.QuestionType.MATRIX:
+        case BackboneSurvey.QuestionType.MATRIX_MULTI:
+          func = BackboneSurvey.MatrixAnswerView;
+          break;
         default:
           func = BackboneSurvey.NoneAnswerView;
           break;
@@ -483,6 +487,65 @@ var BackboneSurvey = BackboneSurvey || {};
   var CheckboxAnswerView = BackboneSurvey.CheckboxAnswerView = Backbone.View.extend({
   });
   _.extend(CheckboxAnswerView.prototype, OptionAnswerViewProto, { multiple: true});
+
+  /**
+   * @class MatrixAnswerView
+   * @extends {Backbone.View}
+   */
+  var MatrixAnswerView = BackboneSurvey.MatrixAnswerView = Backbone.View.extend({
+    templateName: "MatrixAnswerView"
+
+  , multiple: false
+
+  , initialize: function() {
+      this.elPrefix = this.elPrefix || "survey-";
+      this.multiple = this.model.get("type").multiple();
+    }
+
+    /**
+     * @method render
+     * @chainable
+     */
+  , render: function() {
+      this.$el.html(_.template(BackboneSurvey.Templates[this.templateName])({
+        elPrefix: this.elPrefix
+      , multiple: this.multiple
+      , model: this.model.toJSON()
+      }));
+
+      var me = this;
+      this.$('input[name^="answer-"]').on("change", function() {
+        me.trigger("answer");
+      });
+      return this;
+    }
+
+    /**
+     * @method answers
+     * @return {Array}
+     */
+  , answers: function() {
+      var vs = [];
+      var me = this;
+      var fields = this.model.get("fields");
+      _.each(fields, function(field, i) {
+        vs[i] = [];
+        this.$('input[name^="answer-' + me.model.id + '-' + i + '"]').each(function() {
+          var $this = $(this);
+          if ($this.prop("checked")) vs[i].push($this.val());
+        });
+      });
+      return vs;
+    }
+
+    /**
+     * @method subAnswer
+     * @return {Object}
+     */
+  , subAnswer: function() {
+      return {};
+    }
+  });
 
   /**
    * @class TextCardAnswerView
