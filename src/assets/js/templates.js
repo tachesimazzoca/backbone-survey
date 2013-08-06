@@ -43,29 +43,13 @@ var BackboneSurvey = BackboneSurvey || {};
       '<% }); %></dl>'
 
     /**
-     * See {{#crossLink "RadioAnswerView"}}{{/crossLink}}
+     * See {{#crossLink "OptionAnswerViewProto"}}{{/crossLink}}
      *
-     * @property RadioAnswerView
+     * @property OptionAnswerView
      * @type {String}
      */
-  , RadioAnswerView: '<ul><% _.each(model.options, function(option, i) { %>' +
-      '<li><label><input type="radio" name="answer-<%- model.id %>" value="<%- option.value %>"' +
-      '<% if (_.contains(model.answers, option.value)) { %> checked="checked"<% } %>>' +
-      '<%= option.label %></label>' +
-      '<% if (option.sub) { %>' +
-      ' <input type="text" name="sub-<%- model.id %>-<%- i %>" placeholder="<%- option.sub.placeholder %>"' +
-      '<% if (!_.isEmpty(model.subAnswer[option.value])) { %> value="<%- model.subAnswer[option.value] %>"<% } %>>' +
-      '<% } %>' +
-      '</li><% }); %></ul>'
-
-    /**
-     * See {{#crossLink "CheckboxAnswerView"}}{{/crossLink}}
-     *
-     * @property CheckboxAnswerView
-     * @type {String}
-     */
-  , CheckboxAnswerView: '<ul><% _.each(model.options, function(option, i) { %>' +
-      '<li><label><input type="checkbox" name="answer-<%- model.id %>" value="<%- option.value %>"' +
+  , OptionAnswerView: '<ul><% _.each(model.options, function(option, i) { %>' +
+      '<li><label><input type="<%- multiple ? "checkbox" :  "radio" %>" name="answer-<%- model.id %>" value="<%- option.value %>"' +
       '<% if (_.contains(model.answers, option.value)) { %> checked="checked"<% } %>>' +
       '<%= option.label %></label>' +
       '<% if (option.sub) { %>' +

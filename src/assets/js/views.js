@@ -383,7 +383,11 @@ var BackboneSurvey = BackboneSurvey || {};
    * @class OptionAnswerViewProto
    */
   var OptionAnswerViewProto = {
-    initialize: function() {
+    templateName: "OptionAnswerView"
+
+  , multiple: false
+
+  , initialize: function() {
       this.elPrefix = this.elPrefix || "survey-";
     }
 
@@ -392,7 +396,11 @@ var BackboneSurvey = BackboneSurvey || {};
      * @chainable
      */
   , render: function() {
-      this.$el.html(_.template(BackboneSurvey.Templates[this.templateName])({ model: this.model.toJSON() }));
+      this.$el.html(_.template(BackboneSurvey.Templates[this.templateName])({
+        elPrefix: this.elPrefix
+      , multiple: this.multiple
+      , model: this.model.toJSON()
+      }));
       var me = this;
       this.$('input[name^="answer-"]') .each(function() {
         me.normalize($(this));
@@ -464,9 +472,8 @@ var BackboneSurvey = BackboneSurvey || {};
    * @uses OptionAnswerViewProto
    */
   var RadioAnswerView = BackboneSurvey.RadioAnswerView = Backbone.View.extend({
-    templateName: "RadioAnswerView"
   });
-  _.extend(RadioAnswerView.prototype, OptionAnswerViewProto);
+  _.extend(RadioAnswerView.prototype, OptionAnswerViewProto, { multiple: false});
 
   /**
    * @class CheckboxAnswerView
@@ -474,9 +481,8 @@ var BackboneSurvey = BackboneSurvey || {};
    * @uses OptionAnswerViewProto
    */
   var CheckboxAnswerView = BackboneSurvey.CheckboxAnswerView = Backbone.View.extend({
-    templateName: "CheckboxAnswerView"
   });
-  _.extend(CheckboxAnswerView.prototype, OptionAnswerViewProto);
+  _.extend(CheckboxAnswerView.prototype, OptionAnswerViewProto, { multiple: true});
 
   /**
    * @class TextCardAnswerView
