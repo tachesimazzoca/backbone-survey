@@ -21,6 +21,8 @@ var BackboneSurvey = BackboneSurvey || {};
      */
   , rendered: false
 
+  , _locked: false
+
   , _valid: false
 
   , templates: {
@@ -30,6 +32,8 @@ var BackboneSurvey = BackboneSurvey || {};
   , initialize: function() {
       this.$el.hide();
       this.rendered = false;
+
+      this._locked = false;
       this._valid = false;
 
       var ev = {};
@@ -44,6 +48,14 @@ var BackboneSurvey = BackboneSurvey || {};
 
       this.listenTo(this.model, "change", this._render);
       this.listenTo(this.model, "completed", this.complete);
+    }
+
+    /**
+     * @method isLocked
+     * @return {Boolean}
+     */
+  , isLocked: function() {
+      return this._locked;
     }
 
     /**
@@ -94,10 +106,14 @@ var BackboneSurvey = BackboneSurvey || {};
             model: section
           , className: me.elPrefix + "section"
           });
-          view.on("answer", function() {
+
+          view.answerView.on("answer", function() {
             me.validate();
             me.trigger("answer");
           });
+          view.answerView.on("lock", function() { me._locked = true; });
+          view.answerView.on("unlock", function() { me._locked = false; });
+
           view.render();
           view.$("." + me.elPrefix + "error").html("").hide(); // Hide error
           me.$sections.append(view.el);
@@ -117,6 +133,7 @@ var BackboneSurvey = BackboneSurvey || {};
      * @method startPage
      */
   , startPage: function() {
+      if (this.isLocked()) return;
       this.trigger("start", this);
     }
 
@@ -124,6 +141,7 @@ var BackboneSurvey = BackboneSurvey || {};
      * @method prevPage
      */
   , prevPage: function() {
+      if (this.isLocked()) return;
       this.trigger("prev", this);
     }
 
@@ -131,6 +149,7 @@ var BackboneSurvey = BackboneSurvey || {};
      * @method nextPage
      */
   , nextPage: function() {
+      if (this.isLocked()) return;
       if (!this.rendered) return;
       if (this.validate()) {
         var me = this;
@@ -196,8 +215,6 @@ var BackboneSurvey = BackboneSurvey || {};
       this.elPrefix = this.elPrefix || "survey-";
       this.answerView = AnswerViewFactory.create(this);
       this.answerView.elPrefix = this.elPrefix;
-      var me = this;
-      this.answerView.on("answer", function() { me.trigger("answer"); });
     }
 
     /**
@@ -567,6 +584,8 @@ var BackboneSurvey = BackboneSurvey || {};
         me.$selected = null;
         $subDialog.hide();
         me.$('input[name^="answer-"]').prop("disabled", false);
+        me.trigger("answer");
+        me.trigger("unlock");
       });
 
       var fn = function() { me.normalize($(this)); };
@@ -583,6 +602,7 @@ var BackboneSurvey = BackboneSurvey || {};
           var $li = $this.parent();
           var $sub = $li.find('input[name^="sub-"]');
           if ($sub.length) {
+            me.trigger("lock");
             me.$('input[name^="answer-"]').prop("disabled", true);
             me.$selected = $li;
             $subDialog.find('input')
@@ -704,6 +724,8 @@ var BackboneSurvey = BackboneSurvey || {};
         me.updateSubAnswer(me.$selected, $subDialog.find('input').val());
         me.$selected = null;
         $subDialog.hide();
+        me.trigger("answer");
+        me.trigger("unlock");
       });
       // options
       this.$('label').each(function () {
@@ -725,6 +747,7 @@ var BackboneSurvey = BackboneSurvey || {};
           var $li = $this.parent();
           var $sub = $li.find('input[name^="sub-"]');
           if ($sub.length) {
+            me.trigger("lock");
             me.$selected = $li;
             $subDialog.find('input').val($sub.val());
             $subDialog.show();
