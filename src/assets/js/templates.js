@@ -48,15 +48,22 @@ var BackboneSurvey = BackboneSurvey || {};
      * @property OptionAnswerView
      * @type {String}
      */
-  , OptionAnswerView: '<ul><% _.each(model.options, function(option, i) { %>' +
-      '<li><label><input type="<%- multiple ? "checkbox" :  "radio" %>" name="answer-<%- model.id %>" value="<%- option.value %>"' +
-      '<% if (_.contains(model.answers, option.value)) { %> checked="checked"<% } %>>' +
-      '<%= option.label %></label>' +
-      '<% if (option.sub) { %>' +
-      ' <input type="text" name="sub-<%- model.id %>-<%- i %>" placeholder="<%- option.sub.placeholder %>"' +
-      '<% if (!_.isEmpty(model.subAnswer[option.value])) { %> value="<%- model.subAnswer[option.value] %>"<% } %>>' +
-      '<% } %>' +
-      '</li><% }); %></ul>'
+  , OptionAnswerView:
+      '<ul>' +
+      '<% _.each(model.options, function(option, i) { %>' +
+        '<li>' +
+        '<input type="<%- multiple ? "checkbox" :  "radio" %>"' +
+        ' id="<%- elPrefix %>answer-<%- model.id %>-<%- i %>" value="<%- option.value %>"' +
+        ' name="answer-<%- model.id %>" value="<%- option.value %>"' +
+        '<% if (_.contains(model.answers, option.value)) { %> checked="checked"<% } %>>' +
+        '<label for="<%- elPrefix %>answer-<%- model.id %>-<%- i %>"><%= option.label %></label>' +
+        '<% if (option.sub) { %>' +
+        ' <input type="text" name="sub-<%- model.id %>-<%- i %>" placeholder="<%- option.sub.placeholder %>"' +
+        '<% if (!_.isEmpty(model.subAnswer[option.value])) { %> value="<%- model.subAnswer[option.value] %>"<% } %>>' +
+        '<% } %>' +
+        '</li>' +
+      '<% }); %>' +
+      '</ul>'
 
     /**
      * See {{#crossLink "MatrixAnswerView"}}{{/crossLink}}
@@ -64,18 +71,25 @@ var BackboneSurvey = BackboneSurvey || {};
      * @property MatrixAnswerView
      * @type {String}
      */
-  , MatrixAnswerView: '<table><tr><td></td>' +
+  , MatrixAnswerView:
+      '<table>' +
+      '<tr><td></td>' +
       '<% _.each(model.options, function(option, i) { %>' +
-      '<td><%- option.label %></td>' +
-      '<% }); %></tr>' +
-      '<% _.each(model.fields, function(field, i) { %><tr>' +
-      '<td><%- field.label %></td>' +
-      '<% _.each(model.options, function(option) { %><td>' +
-      '<input type="<%- multiple? "checkbox" : "radio" %>"' +
-      ' name="answer-<%- model.id %>-<%- i %>" value="<%- option.value %>"' +
-      '<% if (_.contains(model.answers[i], option.value)) { %> checked="checked"<% } %>>' +
-      '</td><% }); %>' +
-      '</tr><% }); %>' +
+        '<td><%- option.label %></td>' +
+      '<% }); %>' +
+      '</tr>' +
+      '<% _.each(model.fields, function(field, i) { %>' +
+        '<tr>' +
+        '<td><%- field.label %></td>' +
+        '<% _.each(model.options, function(option) { %>' +
+          '<td>' +
+          '<input type="<%- multiple? "checkbox" : "radio" %>"' +
+          ' name="answer-<%- model.id %>-<%- i %>" value="<%- option.value %>"' +
+          '<% if (_.contains(model.answers[i], option.value)) { %> checked="checked"<% } %>>' +
+          '</td>' +
+        '<% }); %>' +
+        '</tr>' +
+      '<% }); %>' +
       '</table>'
 
     /**
