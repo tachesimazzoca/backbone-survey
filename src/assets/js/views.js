@@ -47,7 +47,7 @@ var BackboneSurvey = BackboneSurvey || {};
       this.sectionView = {};
 
       this.listenTo(this.model, "change", this._render);
-      this.listenTo(this.model, "completed", this.complete);
+      this.listenTo(this.model, "completed", this._complete);
     }
 
     /**
@@ -86,8 +86,15 @@ var BackboneSurvey = BackboneSurvey || {};
 
   , _render: function() {
       this.rendered = false;
+      this._locked = false;
       this._valid = false;
       this.beforeRender(this.$el);
+    }
+
+  , _complete: function() {
+      this.$el.html("");
+      this._locked = false;
+      this.trigger("completed", this);
     }
 
     /**
@@ -158,7 +165,7 @@ var BackboneSurvey = BackboneSurvey || {};
           me.model.addAnsweredSectionId(sectionId);
         });
         if (this.model.isLastPage()) {
-          this.complete();
+          this._complete();
         } else {
           this.trigger("next", this);
         }
@@ -196,11 +203,6 @@ var BackboneSurvey = BackboneSurvey || {};
       });
       this._valid = valid;
       return this._valid;
-    }
-
-  , complete: function() {
-      this.$el.html("");
-      this.trigger("completed", this);
     }
   });
 
