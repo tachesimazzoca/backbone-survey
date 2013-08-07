@@ -53,8 +53,9 @@ var BackboneSurvey = BackboneSurvey || {};
       '<% _.each(model.options, function(option, i) { %>' +
         '<li>' +
         '<input type="<%- multiple ? "checkbox" :  "radio" %>"' +
-        ' id="<%- elPrefix %>answer-<%- model.id %>-<%- i %>" value="<%- option.value %>"' +
+        ' id="<%- elPrefix %>answer-<%- model.id %>-<%- i %>"' +
         ' name="answer-<%- model.id %>" value="<%- option.value %>"' +
+        ' value="<%- option.value %>"' +
         '<% if (_.contains(model.answers, option.value)) { %> checked="checked"<% } %>>' +
         '<label for="<%- elPrefix %>answer-<%- model.id %>-<%- i %>"><%= option.label %></label>' +
         '<% if (option.sub) { %>' +

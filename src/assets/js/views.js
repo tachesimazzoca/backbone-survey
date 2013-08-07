@@ -159,16 +159,7 @@ var BackboneSurvey = BackboneSurvey || {};
       if (this.isLocked()) return;
       if (!this.rendered) return;
       if (this.validate()) {
-        var me = this;
-        var sectionIds = _.keys(this.sectionViewMap);
-        _.each(sectionIds, function(sectionId) {
-          me.model.addAnsweredSectionId(sectionId);
-        });
-        if (this.model.isLastPage()) {
-          this._complete();
-        } else {
-          this.trigger("next", this);
-        }
+        this.trigger("next", this);
       }
     }
 
