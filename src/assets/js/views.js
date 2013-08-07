@@ -758,7 +758,6 @@ var BackboneSurvey = BackboneSurvey || {};
   , normalize: function($changed) {
       var so = this.model.get("singleOptions");
       var sel = this.elPrefix + "selected";
-      console.log($changed.hasClass(sel));
       if ($changed.hasClass(sel)) {
         var v = $changed.parent().find('input[name^="answer-"]').val();
         var f = _.contains(so, v) ?
