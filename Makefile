@@ -22,10 +22,16 @@ build: node_modules bower_components checkstyle
 checkstyle: node_modules
 	@./node_modules/.bin/jshint src/assets/js/*.js --config src/.jshintrc
 	@./node_modules/.bin/jshint src/tests/unit/*.js --config src/.jshintrc
+	@./node_modules/.bin/jshint contrib/card/js/*.js --config src/.jshintrc
+	@./node_modules/.bin/jshint contrib/slider/js/*.js --config src/.jshintrc
 
 .PHONY: docs 
 docs:
 	@./node_modules/.bin/yuidoc -o build/docs src/assets/js
+
+.PHONY: contrib 
+contrib:
+	@cp -R contrib build/.
 
 .PHONY: clean
 clean:
