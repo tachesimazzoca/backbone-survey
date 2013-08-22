@@ -15,7 +15,7 @@ build: node_modules bower_components checkstyle
 	@cp bower_components/underscore/underscore-min.js build/lib/underscore/.
 	@install -d build/lib/backbone
 	@cp bower_components/backbone/backbone-min.js build/lib/backbone/.
-	@cd build/assets/js/ && cat core.js enum.js validators.js models.js templates.js views.js > $(ARTIFACT).js
+	@cd build/assets/js/ && cat core.js enum.js validators.js resolvers.js models.js templates.js views.js > $(ARTIFACT).js
 	@./node_modules/.bin/uglifyjs -nc build/assets/js/$(ARTIFACT).js > build/assets/js/$(ARTIFACT).min.js
 
 .PHONY: checkstyle
